@@ -126,8 +126,7 @@ Now, in the code we will create some structs to save the data. We will create an
 We will create a basic structure that saves the tileset of the entity and the animations.
 
 ```cpp
-struct EntityInfo
-{
+struct EntityInfo {
 	TileSetEntity tileset;
 	EntityAnim* animations = nullptr;
 	uint numAnimations = 0;
@@ -137,8 +136,7 @@ struct EntityInfo
 Here we have the struct to save the tileset of an entity and all its properties.
 
 ```cpp
-struct TileSetEntity
-{
+struct TileSetEntity {
 	SDL_Rect GetTileRect(int id) const;
 
 	std::string name;
@@ -159,8 +157,7 @@ For the tileset we will save some information to load the texture. ```SDL_Rect G
 
 ```cpp
 // Get the rect info of an id of tileset
-SDL_Rect TileSetEntity::GetTileRect(int id) const
-{
+SDL_Rect TileSetEntity::GetTileRect(int id) const {
 	SDL_Rect rect;
 	rect.w = tileWidth;
 	rect.h = tileHeight;
@@ -173,8 +170,7 @@ SDL_Rect TileSetEntity::GetTileRect(int id) const
 On animations we will save the id where they come from, the number of frames, the position of frames on the texture and the type of the animation. ```uint FrameCount();``` is a simple function that iterates all xml nodes and returns how many frames the animation has.
 
 ```cpp
-struct EntityAnim
-{
+struct EntityAnim {
 	uint id = 0;
 	uint numFrames = 0;
 	SDL_Rect* frames = nullptr;
@@ -187,13 +183,12 @@ struct EntityAnim
 We won't use colliders, but I will provide the struct to save the information if needed. We must save the collider, the offset from the entity position, the size and the type.
 
 ```cpp
-struct colliderInfo
-{
+struct ColliderInfo {
 	Collider* collider = nullptr;
 	iPoint offset;
 	int width = 0;
 	int height = 0;
-	colliderType type;
+	ColliderType type;
 };
 ```
 
@@ -201,77 +196,73 @@ In order to load all this information, we will have some functions, some of them
 
 ```cpp
 bool LoadEntityData(const char*); // Loads entity by tsx file
-// Virtual functions because every entity has its properties, variables, animations... -----------------------
+// Virtual functions because every entity has its properties, variables, animations... ----------------------
 virtual void LoadProperties(pugi::xml_node&);
 virtual void LoadCollider(pugi::xml_node&);
 virtual void IdAnimToEnum();
 virtual void PushBack() {};
 virtual void AddColliders(Entity* c = nullptr);
-// -----------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
 ```
 
 ```LoadEntityData()``` will contain all others functions. First, we save the tileset information:
 
 ```cpp
 // Fill tileset info
-	pugi::xml_node node = entityFile.child("tileset");
+pugi::xml_node node = entityFile.child("tileset");
 
-	data.tileset.name.assign(node.attribute("name").as_string());
-	data.tileset.tileWidth = node.attribute("tilewidth").as_uint();
-	data.tileset.tileHeight = node.attribute("tileheight").as_uint();
-	data.tileset.spacing = node.attribute("spacing").as_uint();
-	data.tileset.margin = node.attribute("margin").as_uint();
-	data.tileset.tileCount = node.attribute("tilecount").as_uint();
-	data.tileset.columns = node.attribute("columns").as_uint();
-	data.tileset.imagePath = folder += node.child("image").attribute("source").as_string();
-	data.tileset.width = node.child("image").attribute("width").as_uint();
-	data.tileset.height = node.child("image").attribute("height").as_uint();
+data.tileset.name.assign(node.attribute("name").as_string());
+data.tileset.tileWidth = node.attribute("tilewidth").as_uint();
+data.tileset.tileHeight = node.attribute("tileheight").as_uint();
+data.tileset.spacing = node.attribute("spacing").as_uint();
+data.tileset.margin = node.attribute("margin").as_uint();
+data.tileset.tileCount = node.attribute("tilecount").as_uint();
+data.tileset.columns = node.attribute("columns").as_uint();
+data.tileset.imagePath = folder += node.child("image").attribute("source").as_string();
+data.tileset.width = node.child("image").attribute("width").as_uint();
+data.tileset.height = node.child("image").attribute("height").as_uint();
 
-	size = iPoint(data.tileset.tileWidth, data.tileset.tileHeight);
+size = iPoint(data.tileset.tileWidth, data.tileset.tileHeight);
 ```
 
 Later we count how many animations there are and reserve memory for all of them.
 
 ```cpp
-	// Count how many animations are in file
-	node = node.child("tile");
-	data.numAnimations = 0;
-	while (node != NULL)
-  {
-		data.numAnimations++;
-		node = node.next_sibling("tile");
-	}
+// Count how many animations are in file
+node = node.child("tile");
+data.numAnimations = 0;
+while (node != NULL) {
+	data.numAnimations++;
+	node = node.next_sibling("tile");
+}
 
-	// Reserve memory for all animations
-	data.animations = new EntityAnim[data.numAnimations];
+// Reserve memory for all animations
+data.animations = new EntityAnim[data.numAnimations];
 ```
 
 Now, we want to save the number of frames of each animation.
 
 ```cpp
 // Count how many frames for each animation, assign memory for those frames and set id frame start
-	node = entityFile.child("tileset").child("tile");
-	for (uint i = 0; i < data.numAnimations; ++i)
-  {
-		data.animations[i].FrameCount(node.child("animation").child("frame"));
-		data.animations[i].frames = new SDL_Rect[data.animations[i].numFrames];
-		data.animations[i].id = node.attribute("id").as_uint();
-		node = node.next_sibling("tile");
-	}
+node = entityFile.child("tileset").child("tile");
+for (uint i = 0; i < data.numAnimations; ++i) {
+	data.animations[i].FrameCount(node.child("animation").child("frame"));
+	data.animations[i].frames = new SDL_Rect[data.animations[i].numFrames];
+	data.animations[i].id = node.attribute("id").as_uint();
+	node = node.next_sibling("tile");
+}
 
-	// Fill frame array with current information
-	node = entityFile.child("tileset").child("tile");
-	pugi::xml_node nodeFrame;
-	for (uint i = 0; i < data.numAnimations; ++i)
-  {
-		node_frame = node.child("animation").child("frame");
-		for (uint j = 0; j < data.animations[i].numFrames; ++j)
-    {
-			data.animations[i].frames[j] = data.tileset.GetTileRect(nodeFrame.attribute("tileid").as_uint());
-			nodeFrame = nodeFrame.next_sibling("frame");
-		}
-		node = node.next_sibling("tile");
+// Fill frame array with current information
+node = entityFile.child("tileset").child("tile");
+pugi::xml_node nodeFrame;
+for (uint i = 0; i < data.numAnimations; ++i) {
+	nodeFrame = node.child("animation").child("frame");
+	for (uint j = 0; j < data.animations[i].numFrames; ++j) {
+		data.animations[i].frames[j] = data.tileset.GetTileRect(nodeFrame.attribute("tileid").as_uint());
+		nodeFrame = nodeFrame.next_sibling("frame");
 	}
+	node = node.next_sibling("tile");
+}
 ```
 
 Later we save the properties.
@@ -282,12 +273,11 @@ LoadProperties(entityFile.child("tileset").child("properties").child("property")
 An example of loading properties is:
 
 ```cpp
-void Player::LoadProperties(pugi::xml_node &node)
-{
+void Player::LoadProperties(pugi::xml_node &node) {
 	std::string nameIdentificator;
-	while (node)
-  {
+	while (node) {
 		nameIdentificator = node.attribute("name").as_string();
+
 		if (nameIdentificator == "AnimationSpeed")
 			animationSpeed = node.attribute("value").as_float();
 
@@ -299,20 +289,18 @@ void Player::LoadProperties(pugi::xml_node &node)
 Later we load the collider.
 
 ```cpp
-LoadCollider(entity_file.child("tileset").child("tile").child("objectgroup").child("object")); // Load collider
+LoadCollider(entityFile.child("tileset").child("tile").child("objectgroup").child("object")); // Load collider
 ```
 
 And there is an example:
 
 ```cpp
-void Player::LoadCollider(pugi::xml_node &node)
-{
+void Player::LoadCollider(pugi::xml_node &node) {
 	std::string nameIdentificator;
-	while (node)
-  {
+	while (node) {
 		nameIdentificator = node.attribute("name").as_string();
-		if (nameIdentificator == "Collider")
-    {
+
+		if (nameIdentificator == "Collider") {
 			collider.offset.x = node.attribute("x").as_int();
 			collider.offset.y = node.attribute("y").as_int();
 			collider.width = node.attribute("width").as_uint();
@@ -328,12 +316,9 @@ void Player::LoadCollider(pugi::xml_node &node)
 Now, we must convert id animations to enum animations. To do that we use a virtual function. An example may be:
 
 ```cpp
-void Player::IdAnimToEnum()
-{
-	for (uint i = 0; i < data.numAnimations; ++i)
-  {
-		switch (data.animations[i].id)
-    {
+void Player::IdAnimToEnum() {
+	for (uint i = 0; i < data.numAnimations; ++i) {
+		switch (data.animations[i].id) {
 		case 0:
 			data.animations[i].animType = EntityState::IDLE;
 			break;
@@ -351,19 +336,15 @@ void Player::IdAnimToEnum()
 After getting all animations, we must make the pushback of the frames. An example:
 
 ```cpp
-void Player::PushBack()
-{
-	for (uint i = 0; i < data.numAnimations; ++i)
-  {
-		for (uint j = 0; j < data.animations[i].numFrames; ++j)
-    {
-			switch (data.animations[i].animType)
-      {
+void Player::PushBack() {
+	for (uint i = 0; i < data.numAnimations; ++i) {
+		for (uint j = 0; j < data.animations[i].numFrames; ++j) {
+			switch (data.animations[i].animType) {
 			case EntityState::IDLE:
 				animIdle.PushBack(data.animations[i].frames[j]);
 				break;
 			case EntityState::WALKING:
-				anim_walking.PushBack(data.animations[i].frames[j]);
+				animWalking.PushBack(data.animations[i].frames[j]);
 				break;
 			default:
 				break;
@@ -377,19 +358,16 @@ To finish, we have to delete all reserved memory that we won't use.
 
 ```cpp
 // Deleting entity animation data already loaded in its corresponding animation variables
-	for (uint i = 0; i < data.numAnimations; ++i) // This block of code delete animation data loaded of xml,
-  {                                             // is in PushBack() because when load all animation in its
-		if (data.animations[i].frames != nullptr)   // corresponding variables, that data is useless.
-    {
-			delete[] data.animations[i].frames;
-			data.animations[i].frames = nullptr;
-		}
+for (uint i = 0; i < data.numAnimations; ++i) {		// This block of code delete animation data loaded of xml,
+	if (data.animations[i].frames != nullptr) {	// is in PushBack() because when load all animation in its
+		delete[] data.animations[i].frames;	// corresponding variables, that data is useless.
+		data.animations[i].frames = nullptr;
 	}
-	if (data.animations != nullptr)
-  {
-		delete[] data.animations;
-		data.animations = nullptr;
-	}
+}
+if (data.animations != nullptr) {
+	delete[] data.animations;
+	data.animations = nullptr;
+}
 ```
 
 With that we have finished the load of an entity with Tiled.
@@ -407,107 +385,31 @@ As we can see, we have to put the name and set the type to ```static```. We also
 We will create an entity, setting its position and name. Depending of the name we will assign a rect or another for the texture.
 
 ```cpp
-Static::Static(int x, int y, std::string name) :Entity(Types::STATIC, x, y, name)
-{
-	//Orthogonal map ------------------------
-	if (name == "building_0")
-  {
+Static::Static(int x, int y, std::string name) :Entity(Types::STATIC, x, y, name) {
+	// Assign type of static entity, texture rect and pivot
+	// Orthogonal map ------------------------
+	if (name == "building_0") {
 		type = Static::Type::BUILDING;
 		SetRect(0, 144, 64, 84);
 		SetPivot(32, 80);
 	}
-	else if (name == "building_1")
-  {
+	else if (name == "building_1") {
 		type = Static::Type::BUILDING;
 		SetRect(64, 176, 32, 34);
 		SetPivot(16, 32);
 	}
-	else if (name == "building_2")
-  {
+	else if (name == "building_2") {
 		type = Static::Type::BUILDING;
 		SetRect(96, 176, 32, 35);
 		SetPivot(16, 32);
 	}
-	else if (name == "building_3")
-  {
+	else if (name == "building_3") {
 		type = Static::Type::BUILDING;
 		SetRect(128, 169, 48, 41);
 		SetPivot(24, 39);
 	}
-	else if (name == "rock_0")
-  {
-		type = Static::Type::ROCK;
-		SetRect(183, 67, 35, 29);
-		SetPivot(17, 29);
-	}
-	else if (name == "rock_1")
-  {
-		type = Static::Type::ROCK;
-		SetRect(113, 52, 14, 12);
-		SetPivot(7, 12);
-	}
-	else if (name == "rock_2")
-  {
-		type = Static::Type::ROCK;
-		SetRect(128, 48, 16, 16);
-		SetPivot(8, 16);
-	}
-	else if (name == "rock_3")
-  {
-		type = Static::Type::ROCK;
-		SetRect(144, 54, 16, 10);
-		SetPivot(8, 10);
-	}
-	else if (name == "cactus_1")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(48, 48, 16, 16);
-		SetPivot(8, 16);
-	}
-	else if (name == "cactus_2")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(67, 52, 11, 12);
-		SetPivot(5, 12);
-	}
-	else if (name == "cactus_3")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(80, 48, 16, 16);
-		SetPivot(8, 16);
-	}
-	else if (name == "cactus_4")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(97, 50, 14, 14);
-		SetPivot(7, 14);
-	}
-	else if (name == "palm_tree_1")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(164, 55, 9, 8);
-		SetPivot(4, 8);
-	}
-	else if (name == "palm_tree_2")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(177, 48, 13, 16);
-		SetPivot(6, 16);
-	}
-	else if (name == "palm_tree_3")
-  {
-		type = Static::Type::CACTUS;
-		SetRect(194, 42, 14, 22);
-		SetPivot(7, 22);
-	}
-	else if (name == "mountain_0")
-  {
-		type = Static::Type::MOUNTAIN;
-		SetRect(0, 64, 48, 80);
-		SetPivot(24, 80);
-	}
-	else
-  {
+	// ...
+	else {
 		LOG("There isn't any type assigned to %s name entity", name.data());
 	}
 
@@ -594,14 +496,13 @@ Moving player will sort better some objects.
 ### TODO 1
 
 ```cpp
-bool Render::IsOnCamera(const int& x, const int& y, const int& w, const int& h) const
-{
+bool Render::IsOnCamera(const int& x, const int& y, const int& w, const int& h) const {
 	int scale = App->win->GetScale();
 
 	SDL_Rect r = { x*scale,y*scale,w*scale,h*scale };
 	SDL_Rect cam = { -camera.x,-camera.y,camera.w,camera.h };
 
-	return SDL_HasIntersection(&r,&cam);
+	return SDL_HasIntersection(&r, &cam);
 }
 ```
 
@@ -614,38 +515,33 @@ if (App->render->IsOnCamera(MapToWorld(i, j).x, MapToWorld(i, j).y, data.tileWid
 ### TODO 3
 
 ```cpp
-else if (name == "post") {
-		type = ent_Static::Type::POST;
-		SetRect(0, 0, 16, 32);
-		SetPivot(8, 15);
-	}
+else if (name == "building_3") {
+	type = Static::Type::BUILDING;
+	SetRect(128, 169, 48, 41);
+	SetPivot(24, 39);
+}
 ```
 
 ### TODO 4
 
 ```cpp
-for (std::vector<Entity*>::iterator item = entities.begin();item != entities.end(); ++item)
-{
-		if (*item != nullptr)
-    {
-			ret = (*item)->Update(dt);
+for (std::vector<Entity*>::iterator item = entities.begin(); item != entities.end(); ++item) {
+	if (*item != nullptr) {
+		ret = (*item)->Update(dt);
 			
-			if (App->render->IsOnCamera((*item)->position.x, (*item)->position.y, (*item)->size.x, (*item)->size.y))
-      {
-				drawEntities.push_back(*item);
-			}
+		if (App->render->IsOnCamera((*item)->position.x, (*item)->position.y, (*item)->size.x, (*item)->size.y)) {
+			drawEntities.push_back(*item);
 		}
 	}
+}
 	
-for (std::vector<Entity*>::iterator item = drawEntities.begin(); item != drawEntities.end(); ++item)
-{
-		(*item)->Draw();
-		entitiesDrawn++;
+for (std::vector<Entity*>::iterator item = drawEntities.begin(); item != drawEntities.end(); ++item) {
+	(*item)->Draw();
+	entitiesDrawn++;
 
-		if (App->scene->entitiesBox)
-    {
-			DrawDebugQuad(*item);
-		}
+	if (App->scene->entitiesBox) {
+		DrawDebugQuad(*item);
+	}
 }
 ```
 
@@ -658,9 +554,8 @@ std::sort(drawEntities.begin(), drawEntities.end(), EntityManager::SortByYPos);
 ### TODO 6
 
 ```cpp
-static bool SortByYPos(const Entity* ent1, const Entity * ent2)
-{
-		return ent1->pivot.y + ent1->position.y < ent2->pivot.y + ent2->position.y;
+static bool SortByYPos(const Entity* ent1, const Entity* ent2) {
+	return ent1->pivot.y + ent1->position.y < ent2->pivot.y + ent2->position.y;
 }
 ```
 
