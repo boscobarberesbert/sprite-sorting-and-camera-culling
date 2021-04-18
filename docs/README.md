@@ -45,7 +45,7 @@ This is the most common system used, but it could be used with different approac
 
 That consists in sorting entities depending on the position of an entity. It is only focused on the vertical position (Y). In order to make sense of depth, all entities and objects will be sorted by Y position, from the lower Y to the higher Y, from top of the window to down. Entities placed higher will be rendered before entities placed lower. We can see this example of _Chrono Trigger_ that uses this system.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/chrono_trigger_example.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/chrono_trigger_example.png?raw=true" width="500">
 
 Although that, since we may have sprites with different sizes (widths and heights), if we only take into account the vertical position we can get a bad sorting. That's why sometimes we may need to modify it a little bit. This can be done taking into account not only the position but also the height of the sprite. In some cases, if we want to be more accurate with the sorting or if we had an special case in which we wanted to sort also by horizontal position, we can set a pivot on each object, and sort all the sprites depending on it.
 
@@ -424,7 +424,7 @@ First, we must prepare the scene. We will work with three layers.
 
 Background will contain all tiles that won't be affected by entities, the basic ground like sand and small stones. Now, the "Object" layer is useful to see where the objects on the scene will be. All objects will have to be in a single texture, working with an atlas texture of objects. It is so important to have the property ```NoDraw``` in off in order not to render it later. Finally, we have a layer called ```StaticObjects``` and here we will set all objects in scene. Here is an example of putting a building on scene:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/static_object_example.JPG?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/static_object_example.JPG?raw=true" width="500">
 
 As we can see, we have to put the name and set the type to ```static```. We also have to fill all tiles that it occupies. Now we can pass to code.
 
