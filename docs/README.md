@@ -57,7 +57,12 @@ A good example for this, is a video made by [Guinxu](https://www.youtube.com/use
 
 First, the problem is that the player will have to be able to pass under the bridge and to pass above.
 
+![colliders_example_1](images/colliders_example_1.png)
+
 To do that, Guinxu solved the problem putting up two types of colliders. One type made the player be under the bridge, and the other vice versa, so, when player goes over the bridge, the last collider that touches is the red (up arrow) and the player layer moves higher than bridge, when he comes out, the player touches the blue collider (down arrow) and moves the player layer below the bridge. Also, that colliders with arrows activate or deactivate colliders that let the player pass or not. For example, if the player is going below bridge, he cannot pass for the left and right like if he is passing above bridge, and the same case when the player is going above the bridge, he cannot be able to jump across the bridge.
+
+![colliders_example_2](images/colliders_example_2.png)
+![colliders_example_3](images/colliders_example_3.png)
 
 #### By Vector 3D
 
@@ -85,7 +90,11 @@ We will see a radical change in the performancing of the program.
 
 If we check with the profiling the performance of that scene during execution:
 
+![profiling_1](images/profiling_1.png)
+
 We see that there is a lot of time wasted in rendering and sorting sprites. And now, here we have a profiling of the same scene but after making the research implementation:
+
+![profiling_2](images/profiling_2.png)
 
 As we can see, there is a huge difference. It is still a lot of time but we will se later how to optimize that.
 
@@ -97,6 +106,8 @@ In order to work with Tiled easily, I have implemented code to import entities a
 
 We can work with tilesets, tilemaps and spritesheets in Tiled. It allows us some functionalities of which we can take advantage. The only thing we need to do is to study what it provides us and incorporate it to our code.
 First, there is the main information of the tileset that we can see on the _Properties_ window.
+
+![player_tsx_properties](images/player_tsx_properties.JPG)
 
 Here we have some general information about the tileset. The most important are:
 * Name
@@ -112,6 +123,8 @@ Here we have some general information about the tileset. The most important are:
 All these variables will be important to import to the program. This is something very important: _Custom Properties_. Here we can assign every variable we want to the code and edit so fast. In my example I use _AnimationSpeed_ but it can be used to many things. It can be of different types: int, float, string, bool...
 
 It is also a powerful tool to implement animations easily. All we have to do is to pick the camera icon, set a reference tile and drag it to the box to set the animation of an action. Each tile has an id that we will use later to assign the animation.
+
+![player_tsx](images/player_tsx.png)
 
 We can also set many colliders and load them after in code, but it won't affect to the research, so we won't touch that utility.
 
@@ -398,7 +411,11 @@ For static entities it is a little different. It could not be that automatic. Bu
 
 First, we must prepare the scene. We will work with three layers.
 
+![profiling_1](images/tiled_layers.png)
+
 Background will contain all tiles that won't be affected by entities, the basic ground like sand and small stones. Now, the "Object" layer is useful to see where the objects on the scene will be. All objects will have to be in a single texture, working with an atlas texture of objects. It is so important to have the property ```NoDraw``` in off in order not to render it later. Finally, we have a layer called ```StaticObjects``` and here we will set all objects in scene. Here is an example of putting a building on scene:
+
+![static_object_example](images/static_object_example.JPG)
 
 As we can see, we have to put the name and set the type to ```static```. We also have to fill all tiles that it occupies. Now we can pass to code.
 
@@ -478,6 +495,8 @@ Now it is the time to know if it works. You have to pass the position of the til
 You can test it moving camera in all directions and looking if the Tile count on the title changes.
 
 ## TODO 3: Create a building on Tiled and integrate it in code
+
+![building](images/building.JPG)
 
 ### Explanation
 You must follow the steps we have explained above this to create a static entity. In that case we will create a building. Is quite simple, first put it on Tiled and later follow the same structure that other objects.
