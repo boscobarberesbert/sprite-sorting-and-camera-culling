@@ -7,8 +7,7 @@ The first step was to develop 2D perpendicular games, but possibilities were far
 In games like _Super Mario_ or _Grand Theft Auto_ we can identify a sprite ordering without considering the depths, for example in _Super Mario_ we can render the turtle before Mario or vice versa, it just follows the order of background->entities->pipes and blocks, the game does not require the sorting of the sprites.
 For the same reason, _Grand Theft Auto_ does not have to sort sprites. We can follow the order of sprites like this: background->furniture->enemies->guns->player.
 
-![super_mario_1](images/super_mario_1.gif)
-![super_mario_2](images/super_mario_2.gif)
+![super_mario](images/super_mario.gif)
 ![grand_theft_auto](images/grand_theft_auto.gif)
 
 On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that are a good example of the beginning of sorting sprites in video games.
@@ -16,7 +15,7 @@ On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that
 ![the_legend_of_zelda](images/the_legend_of_zelda.gif)
 ![pokemon](images/pokemon.gif)
 
-In this example, I set player behind and front of that villager. We can see when the player is below the villager, the player overlaps the feet of the villager. And the same occurs when the player is above the villager.
+As we can see in this example, the different entities' sprites are properly sorted taking into account the top-down view. The higher the entity is on screen, the sooner it is rendered in order to convey the illusion of depth. That's why the player located lower on screen overlap the rest. We can see it because each one's heads overlap the feets of the next one.
 
 ![sprite_sorting_example](images/sprite_sorting_example.png)
 
