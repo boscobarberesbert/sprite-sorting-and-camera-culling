@@ -1,8 +1,18 @@
+# Who Am I
+I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is developed for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
+
+# First things first
+In this website you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
+
 # Sprite Sorting
 
-As we all know, the start of video games was defined by conceptual graphics that barely conveyed the mechanics of them. Altough that, the need and desire to represent reality has always been there from the beginning. This is the path that many developers of the time took for their projects, and nowadays the main focus of game development is still based on the representation of not only realistic but also extraordinary worlds that can work in our minds, more than conceptual games.
+## What is Sprite Sorting?
+
+As we all know, the start of video games was defined by conceptual graphics that barely conveyed the mechanics of them. Although that, the need and desire to represent reality has always been there from the beginning. This is the path that many developers of the time took for their projects, and nowadays the main focus of game development is still based on the representation of not only realistic but also extraordinary worlds that can work in our minds, more than conceptual games.
 
 The first step was to develop 2D perpendicular games, but possibilities were far beyond that. With the evolution of 2D games, the desire to represent a 3D world in 2D was increasing. This is when we went from side and overhead (perpendicular) view games to 2.5D, top-down (3/4) and isometric games. In the last two cases, it appears a problem, sprite overlapping. Since the sprites order on those games change depending on the game state and the depth of the objects, we will need to be able to sort sprites dynamically.
+
+When we are talking about rendering sprites, we know that the compiler will have to render the images in a certain order, as it can’t render everything at the same time. This causes that if two sprites overlap each other maybe the compiler will render it in the opposite order we want it to work, making the sprite that is supposed to be at the back to be in front of the other one. Depending on the game, to solve that we can manually code which of the sprites we want to render first, but in other cases we may have games that require to change the render order in real time, so we need to make use of different automatic Sprite Sorting systems to help us choose which sprite must be on top.
 
 In games like _Super Mario_ or _Grand Theft Auto_ we can identify a sprite ordering without considering the depths, for example in _Super Mario_ we can render the turtle before Mario or vice versa, it just follows the order of background->entities->pipes and blocks, the game does not require the sorting of the sprites.
 For the same reason, _Grand Theft Auto_ does not have to sort sprites. We can follow the order of sprites like this: background->furniture->enemies->guns->player.
@@ -14,6 +24,12 @@ On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/the_legend_of_zelda.gif?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif?raw=true">
+
+## Why is Sprite Sorting so important?
+
+When making a top-down view game, for example, we need to create the feeling that the game has depth when it’s actually a 2D game. To do that we have to take into account the perspective and the enviroment, so if for example the player goes behind a tree in the map, we don't want to print the player on top of the tree, we want to print the player first and the tree afterwards so the tree sprite gets to be on top of the player sprite.
+
+Since we can't be predicting all the time where the player is going to go to, doing it manually is not an option anymore for these kinds of games, and that’s where automatic sprite sorting systems take action and help us to have the sprites properly rendered at each moment of the game.
 
 As we can see in this example, the different entities' sprites are properly sorted taking into account the top-down view. The higher the entity is on screen, the sooner it is rendered in order to convey the illusion of depth. That's why the player located lower on screen overlap the rest. We can see it because each one's heads overlap the feets of the next one.
 
