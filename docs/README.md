@@ -80,7 +80,11 @@ In my case, I will sort layers by position, but with a modification. We won't op
 
 The result that we want to achieve with this project is something like this:
 
+![project_result](images/project_result.JPG)
+
 As we can see, the player moves around objects and the program manages the render order. On the title we can see the information of how many tiles are being rendered and how many entities are being sorted and rendered. In my case, I used a fictional pivot to sort entities; entities with pivot above will be rendered before entities with pivot below.
+
+![project_result_debug](images/project_result_debug.JPG)
 
 The pivot is the green rectangle in every entity.
 
