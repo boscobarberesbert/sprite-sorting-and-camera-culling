@@ -7,35 +7,35 @@ The first step was to develop 2D perpendicular games, but possibilities were far
 In games like _Super Mario_ or _Grand Theft Auto_ we can identify a sprite ordering without considering the depths, for example in _Super Mario_ we can render the turtle before Mario or vice versa, it just follows the order of background->entities->pipes and blocks, the game does not require the sorting of the sprites.
 For the same reason, _Grand Theft Auto_ does not have to sort sprites. We can follow the order of sprites like this: background->furniture->enemies->guns->player.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/super_mario.gif">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/grand_theft_auto.gif" width="500">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/super_mario.gif?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/grand_theft_auto.gif?raw=true" width="500">
 
 On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that are a good example of the beginning of sorting sprites in video games.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/the_legend_of_zelda.gif">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/the_legend_of_zelda.gif?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif?raw=true">
 
 As we can see in this example, the different entities' sprites are properly sorted taking into account the top-down view. The higher the entity is on screen, the sooner it is rendered in order to convey the illusion of depth. That's why the player located lower on screen overlap the rest. We can see it because each one's heads overlap the feets of the next one.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/sprite_sorting_example.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/sprite_sorting_example.png?raw=true">
 
 Sprite ordering might be like this:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/sprite_sorting.gif">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/sprite_sorting.gif?raw=true">
 
 ## Different approaches by different games
 
 There are some systems to sort sprites, it depends on the type of game, the resources of the machine and the code structure.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg?raw=true">
 
 ### Cut Sprites
 
 This is the laziest way to solve the sorting sprites problem, but also the one that can become a slow and cumbersome way in the long run. Although that, it can serve ample in many cases. It consists in separating a sprite in two parts, the lower part and the higher part. So, the core of the system is to render first the lower part, later all the entities, and finally the higher part. That system is good to mix static and dynamic entities, for example a building isometric game. There is an example of _Pocket City_ made. It is quite interesting and fits well in that project for the simplicity of the project, the isometric type map and the mobile resources. You can see the separated layers and the result, tinted to see where the cut is.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_5.png" width="500">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_2.png">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_6.gif">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_5.png?raw=true" width="500">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_2.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_6.gif?raw=true">
 
 ### Sorting layers
 
@@ -45,12 +45,12 @@ This is the most common system used, but it could be used with different approac
 
 That consists in sorting entities depending on the position of an entity. It is only focused on the vertical position (Y). In order to make sense of depth, all entities and objects will be sorted by Y position, from the lower Y to the higher Y, from top of the window to down. Entities placed higher will be rendered before entities placed lower. We can see this example of _Chrono Trigger_ that uses this system.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/chrono_trigger_example.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/chrono_trigger_example.png?raw=true">
 
 Although that, since we may have sprites with different sizes (widths and heights), if we only take into account the vertical position we can get a bad sorting. That's why sometimes we may need to modify it a little bit. This can be done taking into account not only the position but also the height of the sprite. In some cases, if we want to be more accurate with the sorting or if we had an special case in which we wanted to sort also by horizontal position, we can set a pivot on each object, and sort all the sprites depending on it.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_1.png">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_4.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_1.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_4.png?raw=true">
 
 That could consume more resources than we expected, because we must sort a lot of objects. Remember that we are doing it each and every frame with all the objects and entities we have, including static and dynamic entities. Although that, if this approach is selected there is no other way to do it, because remember that not only the player can change its position, but also the enemies, NPCs or any other element we have around the map; and this has to be taken into account and sorted every frame. In order to optimize, we have implemented a camera culling, in order to sort and render only the entities on camera (on screen). Also, it depends on the entity types and how are saved. The sorting method also influences.
 
@@ -62,12 +62,12 @@ A good example for this, is a video made by [Guinxu](https://www.youtube.com/use
 
 First, the problem is that the player will have to be able to pass under the bridge and to pass above.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_1.png" width="500">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_1.png?raw=true" width="500">
 
 To do that, Guinxu solved the problem putting up two types of colliders. One type made the player be under the bridge, and the other vice versa, so, when player goes over the bridge, the last collider that touches is the red (up arrow) and the player layer moves higher than bridge, when he comes out, the player touches the blue collider (down arrow) and moves the player layer below the bridge. Also, that colliders with arrows activate or deactivate colliders that let the player pass or not. For example, if the player is going below bridge, he cannot pass for the left and right like if he is passing above bridge, and the same case when the player is going above the bridge, he cannot be able to jump across the bridge.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_2.png">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_3.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_2.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/colliders_example_3.png?raw=true">
 
 #### By Vector 3D
 
@@ -77,7 +77,7 @@ This approach is common in isometric maps because it looks like a 3D environment
 
 Camera culling is a basic method that allows the program to only work with entities and objects that are on the camera viewport. This is used to save resources to the machine, only rendering the tiles and sprites that are on screen. It will also be an advantage for the sprite sorting system, because this way we will only manage and sort the sprites of the entities and the objects that are in the camera viewport. It has no sense to render or sort elements that are not on screen at the moment, the only thing it would do is to consume resources unnecessarily. It helps especially in games with large worlds and a lot of entities to render. We will see the implementation and effect in code later. The only thing we have to do is to check if what we are going to render or sort is inside the camera or not, and this can be done just by checking if the rectangle of the camera is intersecting with the rectangle of the tile, entity or object in question.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling.jpg">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling.jpg?raw=true">
 
 # Selected approach
 
@@ -85,11 +85,11 @@ In my case, I will sort layers by position, but with a modification. We won't op
 
 The result that we want to achieve with this project is something like this:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/project_result.gif">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/project_result.gif?raw=true">
 
 As we can see, the player moves around objects and the program manages the render order. On the title we can see the information of how many tiles are being rendered and how many entities are being sorted and rendered. In my case, I used a fictional pivot to sort entities; entities with pivot above will be rendered before entities with pivot below.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/project_result_debug.JPG">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/project_result_debug.JPG?raw=true">
 
 The pivot is the green rectangle in every entity.
 
@@ -99,11 +99,11 @@ We will see a radical change in the performancing of the program.
 
 If we check with the profiling the performance of that scene during execution:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/profiling_1.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/profiling_1.png?raw=true">
 
 We see that there is a lot of time wasted in rendering and sorting sprites. And now, here we have a profiling of the same scene but after making the research implementation:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/profiling_2.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/profiling_2.png?raw=true">
 
 As we can see, there is a huge difference. It is still a lot of time but we will se later how to optimize that.
 
@@ -116,7 +116,7 @@ In order to work with Tiled easily, I have implemented code to import entities a
 We can work with tilesets, tilemaps and spritesheets in Tiled. It allows us some functionalities of which we can take advantage. The only thing we need to do is to study what it provides us and incorporate it to our code.
 First, there is the main information of the tileset that we can see on the _Properties_ window.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/player_tsx_properties.JPG">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/player_tsx_properties.JPG?raw=true">
 
 Here we have some general information about the tileset. The most important are:
 * Name
@@ -133,7 +133,7 @@ All these variables will be important to import to the program. This is somethin
 
 It is also a powerful tool to implement animations easily. All we have to do is to pick the camera icon, set a reference tile and drag it to the box to set the animation of an action. Each tile has an id that we will use later to assign the animation.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/player_tsx.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/player_tsx.png?raw=true">
 
 We can also set many colliders and load them after in code, but it won't affect to the research, so we won't touch that utility.
 
@@ -420,11 +420,11 @@ For static entities it is a little different. It could not be that automatic. Bu
 
 First, we must prepare the scene. We will work with three layers.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/tiled_layers.png">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/tiled_layers.png?raw=true">
 
 Background will contain all tiles that won't be affected by entities, the basic ground like sand and small stones. Now, the "Object" layer is useful to see where the objects on the scene will be. All objects will have to be in a single texture, working with an atlas texture of objects. It is so important to have the property ```NoDraw``` in off in order not to render it later. Finally, we have a layer called ```StaticObjects``` and here we will set all objects in scene. Here is an example of putting a building on scene:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/static_object_example.JPG">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/static_object_example.JPG?raw=true">
 
 As we can see, we have to put the name and set the type to ```static```. We also have to fill all tiles that it occupies. Now we can pass to code.
 
@@ -505,7 +505,7 @@ You can test it moving camera in all directions and looking if the Tile count on
 
 ## TODO 3: Create a building on Tiled and integrate it in code
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/building.JPG">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/building.JPG?raw=true">
 
 ### Explanation
 You must follow the steps we have explained above this to create a static entity. In that case we will create a building. Is quite simple, first put it on Tiled and later follow the same structure that other objects.
