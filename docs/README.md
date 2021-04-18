@@ -16,6 +16,10 @@ On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that
 ![the_legend_of_zelda](images/the_legend_of_zelda.gif)
 ![pokemon](images/pokemon.gif)
 
+In this example, I set player behind and front of that villager. We can see when the player is below the villager, the player overlaps the feet of the villager. And the same occurs when the player is above the villager.
+
+![sprite_sorting_example](images/sprite_sorting_example.png)
+
 Sprite ordering might be like this:
 
 ![sprite_sorting](images/sprite_sorting.gif)
@@ -41,6 +45,8 @@ This is the most common system used, but it could be used with different approac
 #### By Position
 
 That consists in sorting entities depending on the position of an entity. It is only focused on the vertical position (Y). In order to make sense of depth, all entities and objects will be sorted by Y position, from the lower Y to the higher Y, from top of the window to down. Entities placed higher will be rendered before entities placed lower. We can see this example of _Chrono Trigger_ that uses this system.
+
+![chrono_trigger_example](images/chrono_trigger_example.png)
 
 Although that, since we may have sprites with different sizes (widths and heights), if we only take into account the vertical position we can get a bad sorting. That's why sometimes we may need to modify it a little bit. This can be done taking into account not only the position but also the height of the sprite. In some cases, if we want to be more accurate with the sorting or if we had an special case in which we wanted to sort also by horizontal position, we can set a pivot on each object, and sort all the sprites depending on it.
 
