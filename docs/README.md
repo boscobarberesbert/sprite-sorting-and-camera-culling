@@ -91,7 +91,37 @@ This approach is common in isometric maps because it looks like a 3D environment
 
 # Camera Culling
 
+## What is Camera Culling?
+
 Camera culling is a basic method that allows the program to only work with entities and objects that are on the camera viewport. This is used to save resources to the machine, only rendering the tiles and sprites that are on screen. It will also be an advantage for the sprite sorting system, because this way we will only manage and sort the sprites of the entities and the objects that are in the camera viewport. It has no sense to render or sort elements that are not on screen at the moment, the only thing it would do is to consume resources unnecessarily. It helps especially in games with large worlds and a lot of entities to render. We will see the implementation and effect in code later. The only thing we have to do is to check if what we are going to render or sort is inside the camera or not, and this can be done just by checking if the rectangle of the camera is intersecting with the rectangle of the tile, entity or object in question.
+
+### Why is Camera Culling Important?
+
+As we mentioned before, Camera Culling is a way to optimize the game, by using this technique we are going to be able to increase the performance of our game as we are going to be loading less sprites and entities each cycle.
+
+### How do we create a camera culling effect in our game?
+
+To create a camera culling effect in our game is pretty simple, we just have to select what we want to render. To do that we are just going to add a filter to our rendering system. This filter will determine if something is outside the camera by checking if the rectangle of the element that we want to render intersects with the camera rectangle or not and once it has determined it, the sprite will be rendered or ignored. It is so useful for the map rendering, checking if the tile we are going to render is inside the camera or not; but not only that, it's also very useful for the sprite sorting I have explained before, because this way we won't only render the sprites that are on camera, but we will also avoid sorting sprites that are not on screen, which is also very nice for the game performance, especially when we have many entities at the same time. We will see later how to link these two techniques together and achieve to have sprite sorting and camera culling properly connected.
+
+In order to do that we will have to implement a filter similar to the next one and apply it to the render function or the function that pushes the elements into the list if you have done the sprite ordering system before:
+
+```cpp
+if ((rect.x < -camera.x + camera.w && rect.x + rect.w > -camera.x) ||
+(rect.x < -camera.x + camera.w  && rect.x + rect.w > -camera.x))
+{
+	if (rect.y < -camera.y + camera.h && rect.y + rect.h > -camera.y)
+	{
+		//render
+	}
+}
+else
+{
+	//dont render
+}
+
+```
+
+Anyway, as in this project we are using SDL, we will take advantage of it and we will use the function ```SDL_HasIntersection``` that takes two rects as arguments and returns true if they intersect, or false if they don't. Obviously, one rectangle will be the camera and the other the one of the element we want to render.
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling.jpg?raw=true">
 
