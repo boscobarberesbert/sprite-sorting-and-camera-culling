@@ -1,4 +1,4 @@
-# Who Am I
+# Who am I
 I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is generated for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
 
 # First things first
@@ -6,7 +6,7 @@ In this website you will find information about Sprite Sorting and Camera Cullin
 
 # Sprite Sorting
 
-## What is Sprite Sorting?
+## What is sprite sorting?
 
 As we all know, the start of video games was defined by conceptual graphics that barely conveyed the mechanics of them. Although that, the need and desire to represent reality has always been there from the beginning. This is the path that many developers of the time took for their projects, and nowadays the main focus of game development is still based on the representation of not only realistic but also extraordinary worlds that can work in our minds, more than conceptual games.
 
@@ -25,7 +25,7 @@ On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/the_legend_of_zelda.gif?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif?raw=true">
 
-## Why is Sprite Sorting so important?
+## Why is sprite sorting so important?
 
 When making a top-down view game, for example, we need to create the feeling that the game has depth when it’s actually a 2D game. To do that we have to take into account the perspective and the enviroment, so if for example the player goes behind a tree in the map, we don't want to print the player on top of the tree, we want to print the player first and the tree afterwards so the tree sprite gets to be on top of the player sprite.
 
@@ -45,7 +45,7 @@ There are some systems to sort sprites, it depends on the type of game, the reso
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg?raw=true">
 
-### Cut Sprites
+### Cut sprites
 
 This is the laziest way to solve the sorting sprites problem, but also the one that can become a slow and cumbersome way in the long run. Although that, it can serve ample in many cases. It consists in separating a sprite in two parts, the lower part and the higher part. So, the core of the system is to render first the lower part, later all the entities, and finally the higher part. That system is good to mix static and dynamic entities, for example a building isometric game. There is an example of _Pocket City_ made. It is quite interesting and fits well in that project for the simplicity of the project, the isometric type map and the mobile resources. You can see the separated layers and the result, tinted to see where the cut is.
 
@@ -91,11 +91,11 @@ This approach is common in isometric maps because it looks like a 3D environment
 
 # Camera Culling
 
-## What is Camera Culling?
+## What is camera culling?
 
 Camera culling is a basic method that allows the program to only work with entities and objects that are on the camera viewport. This is used to save resources to the machine, only rendering the tiles and sprites that are on screen. It will also be an advantage for the sprite sorting system, because this way we will only manage and sort the sprites of the entities and the objects that are in the camera viewport. It has no sense to render or sort elements that are not on screen at the moment, the only thing it would do is to consume resources unnecessarily. It helps especially in games with large worlds and a lot of entities to render. We will see the implementation and effect in code later. The only thing we have to do is to check if what we are going to render or sort is inside the camera or not, and this can be done just by checking if the rectangle of the camera is intersecting with the rectangle of the tile, entity or object in question.
 
-### Why is Camera Culling Important?
+### Why is camera culling important?
 
 As we mentioned before, camera culling is a way to optimize the game, by using this technique we are going to be able to increase the performance of our game as we are going to be loading less sprites and entities each cycle.
 
@@ -459,7 +459,7 @@ if (data.animations != nullptr) {
 
 With that we have finished the load of an entity with Tiled.
 
-## Importing static entities from Tiled
+## Importing Static Entities from Tiled
 
 For static entities it is a little different. It could not be that automatic. But it is not difficult.
 
