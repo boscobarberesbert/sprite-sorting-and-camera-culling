@@ -1,5 +1,5 @@
 # Who Am I
-I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is developed for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
+I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is generated for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
 
 # First things first
 In this website you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
@@ -97,7 +97,7 @@ Camera culling is a basic method that allows the program to only work with entit
 
 ### Why is Camera Culling Important?
 
-As we mentioned before, Camera Culling is a way to optimize the game, by using this technique we are going to be able to increase the performance of our game as we are going to be loading less sprites and entities each cycle.
+As we mentioned before, camera culling is a way to optimize the game, by using this technique we are going to be able to increase the performance of our game as we are going to be loading less sprites and entities each cycle.
 
 ### How do we create a camera culling effect in our game?
 
