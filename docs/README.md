@@ -111,17 +111,16 @@ if ((rect.x < -camera.x + camera.w && rect.x + rect.w > -camera.x) ||
 {
 	if (rect.y < -camera.y + camera.h && rect.y + rect.h > -camera.y)
 	{
-		//render
+		// Render
 	}
 }
 else
 {
-	//dont render
+	// Don't render
 }
-
 ```
 
-Anyway, as in this project we are using SDL, we will take advantage of it and we will use the function ```SDL_HasIntersection``` that takes two rects as arguments and returns true if they intersect, or false if they don't. Obviously, one rectangle will be the camera and the other the one of the element we want to render.
+Anyway, as in this project we are using SDL, we will take advantage of it and in the implementation we will use the function ```SDL_HasIntersection``` that takes two rects as arguments and returns true if they intersect, or false if they don't. Obviously, one rectangle will be the camera and the other the one of the element we want to render.
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling.jpg?raw=true">
 
