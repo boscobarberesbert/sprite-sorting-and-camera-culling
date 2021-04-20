@@ -4,6 +4,14 @@ I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876
 # First things first
 In this website you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
 
+This research will solve the following questions and provide help to implement them in your code:
+* Do you want to change manually all your code every time you want to print something in a different order or you prefer an automatic method?
+* It's necessary to print every tile, entity, object, particle or any other element that isn't seen on the screen?
+* If I have two entities, one in each side of the screen, do you want to check if they are colliding? What if you have thousands of entities?
+* This is the most important question: Do you want your game (or program) to run faster?
+
+Now that you know that these topics are actually very important for a game to be optimized, let me explain them more in depth and give you a focused guide on how to implement these techniques in your code.
+
 # Sprite Sorting
 
 ## What is sprite sorting?
@@ -12,7 +20,7 @@ As we all know, the start of video games was defined by conceptual graphics that
 
 The first step was to develop 2D perpendicular games, but possibilities were far beyond that. With the evolution of 2D games, the desire to represent a 3D world in 2D was increasing. This is when we went from side and overhead (perpendicular) view games to 2.5D, top-down (3/4) and isometric games. In the last two cases, it appears a problem, sprite overlapping. Since the sprites order on those games change depending on the game state and the depth of the objects, we will need to be able to sort sprites dynamically.
 
-When we are talking about rendering sprites, we know that the compiler will have to render the images in a certain order, as it can’t render everything at the same time. This causes that if two sprites overlap each other maybe the compiler will render it in the opposite order we want it to work, making the sprite that is supposed to be at the back to be in front of the other one. Depending on the game, to solve that we can manually code which of the sprites we want to render first, but in other cases we may have games that require to change the render order in real time, so we need to make use of different automatic Sprite Sorting systems to help us choose which sprite must be on top.
+When we are talking about rendering sprites, we know that the compiler will have to render the images in a certain order, as it can’t render everything at the same time. This causes that if two sprites overlap each other maybe the compiler will render it in the opposite order we want it to work, making the sprite that is supposed to be at the back to be in front of the other one. Depending on the game, to solve that we can manually code which of the sprites we want to render first (remember that the order of the images in the screen will appear in the inverse order that we call our function which prints or renders the image. This means that the first image we have sent to print will be the first image to be rendered), but in other cases we may have games that require to change the render order in real time, so we need to make use of different automatic Sprite Sorting systems to help us choose which sprite must be on top.
 
 In games like _Super Mario_ or _Grand Theft Auto_ we can identify a sprite ordering without considering the depths, for example in _Super Mario_ we can render the turtle before Mario or vice versa, it just follows the order of background->entities->pipes and blocks, the game does not require the sorting of the sprites.
 For the same reason, _Grand Theft Auto_ does not have to sort sprites. We can follow the order of sprites like this: background->furniture->enemies->guns->player.
@@ -122,7 +130,8 @@ else
 
 Anyway, as in this project we are using SDL, we will take advantage of it and in the implementation we will use the function ```SDL_HasIntersection``` that takes two rects as arguments and returns true if they intersect, or false if they don't. Obviously, one rectangle will be the camera and the other the one of the element we want to render.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling.jpg?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling_1.jpg?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling_2.jpg?raw=true">
 
 # Selected approach
 
@@ -643,7 +652,26 @@ static bool SortByYPos(const Entity* ent1, const Entity* ent2) {
 
 Once we have done that we will have our camera culling system implemented, the problem is that at this point it’s not going to be really efficient because we are going to be checking if every element on the map is inside of the camera and depending on the number of entities in the map, our game will have to do a lot of work.
 
-In order to reduce that amount of operations we can implement something called space partitioning. Space partitioning is a technique based on the idea of dividing the space in small cells so then we can check only the entities that are in the same cell. In order to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
+Checking a big number of collisions every frame there is a big waste of resources for our game. Every frame, our computer is checking if one entity is colliding with all the rest of the entities and the same for each entity. For example, if we have 200 entities and we want to know how many entities our game is going to check every frame, the solution is 200x200=40.000 operations. It's a really big number of operations.
+
+Here is the question: Do I have to calculate the collision between two objects that are very far one from each other? The answer is **NO** (if you are interested in optimizing your game).
+
+### Space Partitioning
+
+In order to reduce that amount of operations we can implement something called space partitioning. Space partitioning is a technique based on the idea of dividing the space in small cells so then we can check only the entities that are in the same cell. 
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/space_partitioning_1.png?raw=true">
+
+However, there is a problem with this method. If you have a lot of entities in the same rect or bunch of rects then you will have to calculate the collisions between a big number of entities again.
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/space_partitioning_2.png?raw=true">
+
+In order to solve this problem and to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
+Basically, a quadtree is an other type of space partitioning, but instead of having a static grid of nodes or cells where the game calculates the collisions of all the entities that are inside, it generates automatically its own partitions. It's a tree data structure, which are one of the fastest data structures. Now I'm going to develop an accurate description of how it works.
+
+* First we have a number of entities in our map, lets say 3. This number will be the maximum number of entities that can be inside a rect.
+* If you insert another entity in the map, then the quadtree starts working. It will divide our initial rect in 4 smaller rects. Now, the game will only calculate the collisions of the entities that are in the same new rects.
+* If you add more and more entities, the quadtree will be dividing more and more each rect in 4 smaller rects.
 
 <em>Quadtree ramifications represented</em>
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_scheme.png?raw=true">
@@ -654,6 +682,9 @@ In order to reduce that amount of operations we can implement something called s
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_3.png?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_4.png?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_5.png?raw=true">
+
+As you can see, we are generating smaller regions in order to reduce the amount of collisions checkings. This is a gif that shows how it works in real time.
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_example.png?raw=true">
 
 Inside the quadtree we will need 5 functions:
 
@@ -682,15 +713,15 @@ Now we should be able to only render things inside the camera in an efficent way
 
 # Alternatives
 
-When talking about sprite sorting, another algorithm that is also very used is the priority queue. In order to implement it, we have to use the Standard Template Library, which is going to let us use the ```priority_queue```. A priority queue is an abstract data type really similar to a normal queue but with the small difference that each elements inside of it has a certain priority. That means that the data that we insert inside the priority queue will be ordered from least to greatest according to the priority we gave each element.
+When talking about sprite sorting, another algorithm that is also very used is the priority queue. In order to implement it, we have to use the Standard Template Library, which is going to let us use the ```priority_queue```. A priority queue is an abstract data type really similar to a normal queue but with the small difference that each elements inside of it has a certain priority. That means that the data that we insert inside the priority queue will be ordered from least to greatest according to the priority we gave each element. Basically, it reorders the elements that are stored inside with a predefined condition
 
 The ```priority_queue``` will need 3 parameters:
 
-**1. Type of elements in the queue.**
+**1. [T] Type of elements in the queue.**
 
-**2. Type of container to store the data.**
+**2. [Container vector] Type of container to store the data.**
 
-**3. A binary predicate that takes two elements (of type T) as arguments and returns a bool.**
+**3. [Compare] A binary predicate that takes two elements (of type T) as arguments and returns a bool. It determines which of the two elements has to go before the other.**
 
 The syntaxis would look something like that:
 
@@ -699,6 +730,24 @@ std::priority_queue <class T, class Container = vector<T>, class Compare = less<
 ```
 
 Before implementing our priority queue we will have to create a class that will be the elements with all the data that we are going to print, a struct with a boolean operator that will compare 2 elements from the class that we previously created and will return true or false according to our priority condition.
+
+We will have to define the function that compares the elements and the best way is to create an struct with a boolean operator that needs the type of elements that we want to compare, in this case the struct will be:
+
+```
+struct OrderPriority
+{
+    bool operator()(const ObjectToPrint* Object1, const ObjectToPrint* Object2)
+    {
+    	// Priority condition
+    }
+}
+```
+
+In the end, our priority queue will have this declaration:
+
+```
+std::priority_queue <ObjectToPrint*, vector<ObjectToPrint*>, OrderPriority> SpriteSorterQueue;
+```
 
 After doing that we will be able to implement the priority_queue with our 3 parameters:
 
@@ -710,7 +759,12 @@ After doing that we will be able to implement the priority_queue with our 3 para
 
 With that we will be able to order our sprites, the only thing that is left to do is to create 2 functions.
 The first function will have to create an element of the class we created and and push it into the priority queue.
-The second function will be the one that will take the elements that are in the queue in the correct  order, send them to the renderer and pop them form the queue.
+The second function will be the one that will take the elements that are in the queue in the correct order, send them to the renderer and pop them form the queue.
+
+Now that we have defined the priority queue we have to create a method that fills it and then, when all the frame logic has been done, print the sprites in the correct order. This can be done in two steps:
+* **void FillQueue():** This function has to replace our render function, because now we are going to send the sprites to the queue before the rendering. This function has to have the same arguments as our render funtion. It has to create a new ```ObjectToPrint``` element and push it to the queue using SpriteOrdererQueue.push(ObjectToPrint*).
+
+* **Render the Queue:** Once our priority queue has all your sprites in the correct order, it's time to render the sprites. You have to modify your Render function. Our render function now will recieve your priority queue as a parameter and it will have to render our sprites one by one while our queue is not empty. Remember to make pop of each element that has been printed. 
 
 After that is done we will have our sprite ordering system. Now we should be able to see our sprites rendered as we wanted.
 
@@ -748,7 +802,7 @@ In that case, I will separate links in two sections, because sorting in isometri
 
 ## Camera Culling
 
-[Camera culling](https://www.youtube.com/watch?v=zCaurIC49I4)
+* [Camera culling](https://www.youtube.com/watch?v=zCaurIC49I4)
 
 ### Spatial partition and Quadtree
 
