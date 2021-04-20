@@ -511,25 +511,6 @@ Static::Static(int x, int y, std::string name) :Entity(Types::STATIC, x, y, name
 
 And that is all. To render we will give the texture and the frame we have loaded. Remember that it is only useful if the object will do nothing about interaction, only will be there.
 
-# Links to more documentation
-
-If you want to know more about Sprite Sorting, here you have some links of interest:
-
-* [Cut Sprites solution](https://trederia.blogspot.com/2014/08/z-ordering-of-sprites-in-tiled-maps.html)
-* [Different approaches to Ordering by position](https://eliasdaler.wordpress.com/2013/11/20/z-order-in-top-down-2d-games/)
-* [Sprite ordering and tiles](https://love2d.org/forums/viewtopic.php?t=77149)
-* [Pocket City solution](https://blog.pocketcitygame.com/cheating-at-z-depth-sprite-sorting-in-an-isometric-game/amp/)
-
-In that case, I will separate links in two sections, because sorting in isometric view could be tricky in some cases:
-
-* [Isometric with objects with more than one tile](https://gamedev.stackexchange.com/questions/103442/how-do-i-determine-the-draw-order-of-isometric-2d-objects-occupying-multiple-til)
-* [Isometric sprite ordering with Tiled](https://discourse.mapeditor.org/t/isometric-depth-sorting/736)
-* [Drawing isometric boxes in the correct order](https://shaunlebron.github.io/IsometricBlocks/)
-* [Isometric depth sorting with big objects](https://stackoverflow.com/questions/11166667/isometric-depth-sorting-issue-with-big-objects)
-* [Optimization of sorting sprites in isometric](https://gamedev.stackexchange.com/questions/97442/sorting-sprites-layers-in-isometric-view)
-* [Sort with Z-buffer and anchor point, isometric map](https://gamedev.stackexchange.com/questions/69851/isometric-map-draw-sort-with-z-buffer-and-anchor-point)
-* [Isometric sort algorithm](https://gamedev.stackexchange.com/questions/8151/how-do-i-sort-isometric-sprites-into-the-correct-order)
-
 # TODOs and Solution
 
 ## TODO 1: Create IsOnCamera function
@@ -658,12 +639,84 @@ static bool SortByYPos(const Entity* ent1, const Entity* ent2) {
 
 # Improvements
 
+## Quadtree
+
+Once we have done that we will have our camera culling system implemented, the problem is that at this point it’s not going to be really efficient because we are going to be checking if every element on the map is inside of the camera and depending on the number of entities in the map, our game will have to do a lot of work.
+
+In order to reduce that amount of operations we can implement something called space partitioning. Space partitioning is a technique based on the idea of dividing the space in small cells so then we can check only the entities that are in the same cell. In order to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
+
+<em>Quadtree ramifications represented</em>
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_scheme.png?raw=true">
+
+<em>Quadtree visual representation</em>
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_1.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_2.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_3.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_4.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_5.png?raw=true">
+
+Inside the quadtree we will need 5 functions:
+
+**Clear():** This function deletes all the elements inside the nodes.
+
+**Split():** This functions is in charge of dividing the actual node into 4 nodes when the actual node has reached it's maximum number of elements.
+
+**Insert():** This function inserts every element in it's corresponding node.
+
+**PushCollisionVector:** This function checks which elements the will have to be checked according to the element passed.
+
+**IfInside()** Checks if a rectangle is inside another one.
+
+Once we have the quadtree class we can start to implement it in the camera culling, to do so, we have to initialize a quadtree with a rect of the size of the map or the area where we want to apply it. Then we have to insert all the entities and finally call the ```PushCollisionVector``` with the camera rectangle. This way, it will check which elements are inside the camera and it will return them in a list, and that list will be the elements that will have to be printed. 
+
 * Loading textures is so expensive and now we have a texture loaded for every entity. A possible solution is to have only the textures we will use, and set by an id the texture that you need. For example texture 0 to background, 1 to player, 2 to objects and 3 to npc's.
 * There are a lot of sorting methods and a lot of type of containers. Sorting vectors doing sort() function is expensive. You have to study which container and sorting method adjust better to your game. Here you have some links to different types of sorting methods.
 [Brilliant.org](https://brilliant.org/wiki/sorting-algorithms/)
 [Geeksforgeeks.org](https://www.geeksforgeeks.org/sorting-algorithms/)
 * Iterate all map and know if that tile is on camera is so expensive when map is so big. In order to improve that, you can iterate the map from the beginning of the camera position to the camera position plus viewport size.
 * The way that we implement static entities is simple but it is not automatic and it is ugly to see hardcode. First improve is to set all static entities information in a XML file. Second, you can investigate a way to load pivot and frame of static entities in Tiled.
+
+# Documentation and Reference links (Webgraphy)
+
+## Sprite Sorting
+
+If you want to know more about Sprite Sorting, here you have some links of interest:
+
+* [Cut sprites solution](https://trederia.blogspot.com/2014/08/z-ordering-of-sprites-in-tiled-maps.html)
+* [Different approaches to sorting by position](https://eliasdaler.wordpress.com/2013/11/20/z-order-in-top-down-2d-games/)
+* [Sprite sorting and tiles](https://love2d.org/forums/viewtopic.php?t=77149)
+* [Pocket City solution](https://blog.pocketcitygame.com/cheating-at-z-depth-sprite-sorting-in-an-isometric-game/amp/)
+* [Depth sorting for Game Maker Studio](https://forum.yoyogames.com/index.php?threads/depth-sorting-method-for-gms2-objects-sprites.42868/)
+* [Stack Overflow discussion about the sprite sorting idea](https://stackoverflow.com/questions/11002811/sorting-objects-by-y-value-before-rendering)
+* [Images of The Legend of Zelda](https://eliasdaler.wordpress.com/2013/11/20/z-order-in-top-down-2d-games)
+
+In that case, I will separate links in two sections, because sorting in isometric view could be tricky in some cases:
+
+* [Isometric with objects with more than one tile](https://gamedev.stackexchange.com/questions/103442/how-do-i-determine-the-draw-order-of-isometric-2d-objects-occupying-multiple-til)
+* [Isometric sprite sorting with Tiled](https://discourse.mapeditor.org/t/isometric-depth-sorting/736)
+* [Drawing isometric boxes in the correct order](https://shaunlebron.github.io/IsometricBlocks/)
+* [Isometric depth sorting with big objects](https://stackoverflow.com/questions/11166667/isometric-depth-sorting-issue-with-big-objects)
+* [Optimization of sorting sprites in isometric](https://gamedev.stackexchange.com/questions/97442/sorting-sprites-layers-in-isometric-view)
+* [Sort with Z-buffer and anchor point, isometric map](https://gamedev.stackexchange.com/questions/69851/isometric-map-draw-sort-with-z-buffer-and-anchor-point)
+* [Isometric sorting algorithm](https://gamedev.stackexchange.com/questions/8151/how-do-i-sort-isometric-sprites-into-the-correct-order)
+
+### Another useful algorithm we could implement to sort sprites
+
+* [Cplusplus priority_queue wiki](http://www.cplusplus.com/reference/queue/priority_queue/)
+* [cppreference priority_queue](https://en.cppreference.com/w/cpp/container/priority_queue)
+* [Video: priority_queue explanation](https://www.youtube.com/watch?v=wptevk0bshY)
+
+## Camera Culling
+
+[Camera culling](https://www.youtube.com/watch?v=zCaurIC49I4)
+
+### Spatial partition and Quadtree
+
+[Spatial partition and quadtree idea](https://youtu.be/RN1GRX2ByLM)
+[Quadtree explanation and images](https://www.genbeta.com/desarrollo/teoria-de-colisiones-2d-quadtree)
+[Quadtree explanation and pseudocode](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
+[C++ Quadtree Class repository](https://github.com/MarcusMathiassen/P2D/tree/master/src)
+[Quadtree explanation](https://stackoverflow.com/questions/41946007/efficient-and-well-explained-implementation-of-a-quadtree-for-2d-collision-det)
 
 # Author
 
