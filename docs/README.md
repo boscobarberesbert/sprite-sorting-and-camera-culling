@@ -712,11 +712,11 @@ In that case, I will separate links in two sections, because sorting in isometri
 
 ### Spatial partition and Quadtree
 
-[Spatial partition and quadtree idea](https://youtu.be/RN1GRX2ByLM)
-[Quadtree explanation and images](https://www.genbeta.com/desarrollo/teoria-de-colisiones-2d-quadtree)
-[Quadtree explanation and pseudocode](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
-[C++ Quadtree Class repository](https://github.com/MarcusMathiassen/P2D/tree/master/src)
-[Quadtree explanation](https://stackoverflow.com/questions/41946007/efficient-and-well-explained-implementation-of-a-quadtree-for-2d-collision-det)
+* [Spatial partition and quadtree idea](https://youtu.be/RN1GRX2ByLM)
+* [Quadtree explanation and images](https://www.genbeta.com/desarrollo/teoria-de-colisiones-2d-quadtree)
+* [Quadtree explanation and pseudocode](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
+* [C++ Quadtree Class repository](https://github.com/MarcusMathiassen/P2D/tree/master/src)
+* [Quadtree explanation](https://stackoverflow.com/questions/41946007/efficient-and-well-explained-implementation-of-a-quadtree-for-2d-collision-det)
 
 # Author
 
