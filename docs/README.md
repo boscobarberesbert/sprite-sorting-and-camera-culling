@@ -691,7 +691,7 @@ The ```priority_queue``` will need 3 parameters:
 The syntaxis would look something like that:
 
 ```
-std::priority_queue <class T, class Container = vector<T>, class Compare = less<typename Container::value_type> > name;
+std::priority_queue <class T, class Container = vector<T>, class Compare = less<typename Container::value_type> name;
 ```
 
 Before implementing our priority queue we will have to create a class that will be the elements with all the data that we are going to print, a struct with a boolean operator that will compare 2 elements from the class that we previously created and will return true or false according to our priority condition.
@@ -707,6 +707,8 @@ After doing that we will be able to implement the priority_queue with our 3 para
 With that we will be able to order our sprites, the only thing that is left to do is to create 2 functions.
 The first function will have to create an element of the class we created and and push it into the priority queue.
 The second function will be the one that will take the elements that are in the queue in the correct  order, send them to the renderer and pop them form the queue.
+
+After that is done we will have our sprite ordering system.
 
 As we can see, the process is basically the same, the only thing that changes is the sorting algorithm of the abstract data type.
 
