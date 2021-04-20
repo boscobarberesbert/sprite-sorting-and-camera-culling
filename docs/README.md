@@ -667,7 +667,11 @@ Inside the quadtree we will need 5 functions:
 
 **IfInside():** Checks if a rectangle is inside another one.
 
-Once we have the quadtree class we can start to implement it in the camera culling, to do so, we have to initialize a quadtree with a rect of the size of the map or the area where we want to apply it. Then we have to insert all the entities and finally call the ```PushCollisionVector``` with the camera rectangle. This way, it will check which elements are inside the camera and it will return them in a list, and that list will be the elements that will have to be printed. 
+Once we have the quadtree class we can start to implement it in the camera culling, to do so, we have to initialize a quadtree with a rect of the size of the map or the area where we want to apply it. Then we have to insert all the entities and finally call the ```PushCollisionVector``` with the camera rectangle. This way, it will check which elements are inside the camera and it will return them in a list, and that list will be the elements that will have to be printed.
+
+Now we should be able to only render things inside the camera in an efficent way.
+
+## Other improvements
 
 * Loading textures is so expensive and now we have a texture loaded for every entity. A possible solution is to have only the textures we will use, and set by an id the texture that you need. For example texture 0 to background, 1 to player, 2 to objects and 3 to npc's.
 * There are a lot of sorting methods and a lot of type of containers. Sorting vectors doing sort() function is expensive. You have to study which container and sorting method adjust better to your game. Here you have some links to different types of sorting methods.
@@ -708,7 +712,7 @@ With that we will be able to order our sprites, the only thing that is left to d
 The first function will have to create an element of the class we created and and push it into the priority queue.
 The second function will be the one that will take the elements that are in the queue in the correct  order, send them to the renderer and pop them form the queue.
 
-After that is done we will have our sprite ordering system.
+After that is done we will have our sprite ordering system. Now we should be able to see our sprites rendered as we wanted.
 
 As we can see, the process is basically the same, the only thing that changes is the sorting algorithm of the abstract data type.
 
@@ -759,5 +763,5 @@ In that case, I will separate links in two sections, because sorting in isometri
 # Author
 
 All the project has been done by Bosco Barber Esbert. You can find me in:
-* Github: [boscobarberesbert](https://github.com/boscobarberesbert)
+* GitHub: [boscobarberesbert](https://github.com/boscobarberesbert)
 * Contact: boscobarberesbert@gmail.com
