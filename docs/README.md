@@ -676,6 +676,40 @@ Once we have the quadtree class we can start to implement it in the camera culli
 * Iterate all map and know if that tile is on camera is so expensive when map is so big. In order to improve that, you can iterate the map from the beginning of the camera position to the camera position plus viewport size.
 * The way that we implement static entities is simple but it is not automatic and it is ugly to see hardcode. First improve is to set all static entities information in a XML file. Second, you can investigate a way to load pivot and frame of static entities in Tiled.
 
+# Alternatives
+
+When talking about sprite sorting, another algorithm that is also very used is the priority queue. In order to implement it, we have to use the Standard Template Library, which is going to let us use the ```priority_queue```. A priority queue is an abstract data type really similar to a normal queue but with the small difference that each elements inside of it has a certain priority. That means that the data that we insert inside the priority queue will be ordered from least to greatest according to the priority we gave each element.
+
+The ```priority_queue``` will need 3 parameters:
+
+**1. Type of elements in the queue.**
+
+**2. Type of container to store the data.**
+
+**3. A binary predicate that takes two elements (of type T) as arguments and returns a bool.**
+
+The syntaxis would look something like that:
+
+```
+std::priority_queue <class T, class Container = vector<T>, class Compare = less<typename Container::value_type> > name;
+```
+
+Before implementing our priority queue we will have to create a class that will be the elements with all the data that we are going to print, a struct with a boolean operator that will compare 2 elements from the class that we previously created and will return true or false according to our priority condition.
+
+After doing that we will be able to implement the priority_queue with our 3 parameters:
+
+**1. The class that we created.**
+
+**2. A vector of the class that we created.**
+
+**3. The struct that we created with the boolean opperator.**
+
+With that we will be able to order our sprites, the only thing that is left to do is to create 2 functions.
+The first function will have to create an element of the class we created and and push it into the priority queue.
+The second function will be the one that will take the elements that are in the queue in the correct  order, send them to the renderer and pop them form the queue.
+
+As we can see, the process is basically the same, the only thing that changes is the sorting algorithm of the abstract data type.
+
 # Documentation and Reference links (Webgraphy)
 
 ## Sprite Sorting
