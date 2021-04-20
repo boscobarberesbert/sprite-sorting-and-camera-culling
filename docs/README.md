@@ -95,11 +95,11 @@ This approach is common in isometric maps because it looks like a 3D environment
 
 Camera culling is a basic method that allows the program to only work with entities and objects that are on the camera viewport. This is used to save resources to the machine, only rendering the tiles and sprites that are on screen. It will also be an advantage for the sprite sorting system, because this way we will only manage and sort the sprites of the entities and the objects that are in the camera viewport. It has no sense to render or sort elements that are not on screen at the moment, the only thing it would do is to consume resources unnecessarily. It helps especially in games with large worlds and a lot of entities to render. We will see the implementation and effect in code later. The only thing we have to do is to check if what we are going to render or sort is inside the camera or not, and this can be done just by checking if the rectangle of the camera is intersecting with the rectangle of the tile, entity or object in question.
 
-### Why is camera culling important?
+## Why is camera culling important?
 
 As we mentioned before, camera culling is a way to optimize the game, by using this technique we are going to be able to increase the performance of our game as we are going to be loading less sprites and entities each cycle.
 
-### How do we create a camera culling effect in our game?
+## How do we create a camera culling effect in our game?
 
 To create a camera culling effect in our game is pretty simple, we just have to select what we want to render. To do that we are just going to add a filter to our rendering system. This filter will determine if something is outside the camera by checking if the rectangle of the element that we want to render intersects with the camera rectangle or not and once it has determined it, the sprite will be rendered or ignored. It is so useful for the map rendering, checking if the tile we are going to render is inside the camera or not; but not only that, it's also very useful for the sprite sorting I have explained before, because this way we won't only render the sprites that are on camera, but we will also avoid sorting sprites that are not on screen, which is also very nice for the game performance, especially when we have many entities at the same time. We will see later how to link these two techniques together and achieve to have sprite sorting and camera culling properly connected.
 
@@ -663,9 +663,9 @@ Inside the quadtree we will need 5 functions:
 
 **Insert():** This function inserts every element in it's corresponding node.
 
-**PushCollisionVector:** This function checks which elements the will have to be checked according to the element passed.
+**PushCollisionVector():** This function checks which elements the will have to be checked according to the element passed.
 
-**IfInside()** Checks if a rectangle is inside another one.
+**IfInside():** Checks if a rectangle is inside another one.
 
 Once we have the quadtree class we can start to implement it in the camera culling, to do so, we have to initialize a quadtree with a rect of the size of the map or the area where we want to apply it. Then we have to insert all the entities and finally call the ```PushCollisionVector``` with the camera rectangle. This way, it will check which elements are inside the camera and it will return them in a list, and that list will be the elements that will have to be printed. 
 
@@ -698,7 +698,7 @@ In that case, I will separate links in two sections, because sorting in isometri
 * [Isometric depth sorting with big objects](https://stackoverflow.com/questions/11166667/isometric-depth-sorting-issue-with-big-objects)
 * [Optimization of sorting sprites in isometric](https://gamedev.stackexchange.com/questions/97442/sorting-sprites-layers-in-isometric-view)
 * [Sort with Z-buffer and anchor point, isometric map](https://gamedev.stackexchange.com/questions/69851/isometric-map-draw-sort-with-z-buffer-and-anchor-point)
-* [Isometric sorting algorithm](https://gamedev.stackexchange.com/questions/8151/how-do-i-sort-isometric-sprites-into-the-correct-order)
+* [Isometric sorting algorithm, maths for isometric view](https://gamedev.stackexchange.com/questions/8151/how-do-i-sort-isometric-sprites-into-the-correct-order)
 
 ### Another useful algorithm we could implement to sort sprites
 
@@ -712,6 +712,8 @@ In that case, I will separate links in two sections, because sorting in isometri
 
 ### Spatial partition and Quadtree
 
+* [Spatial partition:](https://www.youtube.com/watch?v=ELUZ60zZJzM) In this video you will find a visual representation of how spatial partitioning works.
+* [Quadtree Demo:](https://google.github.io/closure-library/source/closure/goog/demos/quadtree.html) In this website you will be able to play around with a representation of a quadtree.
 * [Spatial partition and quadtree idea](https://youtu.be/RN1GRX2ByLM)
 * [Quadtree explanation and images](https://www.genbeta.com/desarrollo/teoria-de-colisiones-2d-quadtree)
 * [Quadtree explanation and pseudocode](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
