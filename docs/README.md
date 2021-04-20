@@ -665,6 +665,8 @@ In order to reduce that amount of operations we can implement something called s
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/space_partitioning_2.png?raw=true" width="200">
 </p>
 
+### Quadtree
+
 In order to solve this problem and to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
 Basically, a quadtree is an other type of space partitioning, but instead of having a static grid of nodes or cells where the game calculates the collisions of all the entities that are inside, it generates automatically its own partitions. It's a tree data structure, which are one of the fastest data structures. Now I'm going to develop an accurate description of how it works.
 
@@ -685,23 +687,60 @@ Basically, a quadtree is an other type of space partitioning, but instead of hav
 </p>
 
 As you can see, we are generating smaller regions in order to reduce the amount of collisions checkings. This is a gif that shows how it works in real time.
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_example.gif?raw=true">
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_example.gif?raw=true"></p>
 
-Inside the quadtree we will need 5 functions:
+### Quadtree in C++
 
-**Clear():** This function deletes all the elements inside the nodes.
+Inside the quadtree we will need the following 5 functions:
 
-**Split():** This functions is in charge of dividing the actual node into 4 nodes when the actual node has reached it's maximum number of elements.
+* **Clear():** This function deletes all the entities inside the nodes.
+* **Split():** This function divides the parent node into 4 children nodes when the current node reaches the maximum number of entities.
+* **Insert():** This function inserts all the entities in their appropriate child and if it's necessary calls the Split() function.
+* **ColliderList():** This function receives an entity and returns a list with all the entities that the collider manager will have to check.
+* **CheckBoundaries()** Check if two rectangles are colliding.
 
-**Insert():** This function inserts every element in it's corresponding node.
+As I've said before, a quadtree is a tree structure, which means that you start in a node and from that node you go to its childrens. The faster way to do it is using recursive functions. The class template will be something like this one:
 
-**PushCollisionVector():** This function checks which elements the will have to be checked according to the element passed.
+```
+class Quadtree
+{
+public:
 
-**IfInside():** Checks if a rectangle is inside another one.
+	Quadtree(SDL_Rect rect)
+	{
+		Space = rect;
+		for (int i = 0; i < children.size(); i++)
+		{
+			children[i] = nullptr;
+		}
+	}
+
+	~Quadtree(){ Clear();}
+
+	void Clear();
+	void Split();
+	bool insert();
+	bool CheckBoundaries();
+	list<Collider*> FillCollisionList();
+
+public:
+	
+	SDL_Rect		space; 		// Rect that deffine the node space
+	list<Collider*>		objects;	// A list to store all the entities
+	array<Quadtree*,4>	children;	// An empty array for the childrens
+};
+```
 
 Once we have the quadtree class we can start to implement it in the camera culling, to do so, we have to initialize a quadtree with a rect of the size of the map or the area where we want to apply it. Then we have to insert all the entities and finally call the ```PushCollisionVector``` with the camera rectangle. This way, it will check which elements are inside the camera and it will return them in a list, and that list will be the elements that will have to be printed.
 
 Now we should be able to only render things inside the camera in an efficent way.
+
+### Using The Quadtree with Camera Culling
+
+If we want to implement our Quadtree class in a camera culling method, we have to follow these steps:
+* Initialize the Quadtree with the map size rect.
+* Insert all the entities inside the Quadtree using the Insert() function.
+* Now that you have all the entities organized inside the quadtree, you can call the ColliderList(cameraRect) function with the camera rectangle. It will check where is the camera and with which rectangles it is colliding. Then the function will return a list of entities that are inside these rectangles. We have to check if an entity can be or not inside the camera. If they are inside the camera we will send it to the Priority queue and then we will render it!
 
 ## Other improvements
 
