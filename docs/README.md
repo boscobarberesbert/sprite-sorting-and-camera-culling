@@ -51,12 +51,6 @@ Sprite sorting might be like this:
 
 <p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/sprite_sorting.gif?raw=true"></p>
 
-## Different approaches by different games
-
-There are some systems to sort sprites, it depends on the type of game, the resources of the machine and the code structure.
-
-<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg?raw=true"></p>
-
 ## Z-order as a concept
 
 ### Basics
@@ -79,6 +73,12 @@ You can tell that Link is behind that tree. But this is actually an illusion of 
 <p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_2.png?raw=true"></p>
 
 And now Link is drawn after the tree. He has higher z-order and it looks like he’s standing closer to the camera. And here’s how you can achieve the same effect.
+
+## Different approaches by different games
+
+There are some systems to sort sprites, it depends on the type of game, the resources of the machine and the code structure.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg?raw=true"></p>
 
 ### Cut sprites
 
