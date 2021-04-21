@@ -862,7 +862,7 @@ Once we have the quadtree class we can start to implement it in the camera culli
 
 Now we should be able to only render things inside the camera in an efficent way.
 
-### Using The Quadtree with Camera Culling
+#### Using The Quadtree with Camera Culling
 
 If we want to implement our Quadtree class in a camera culling method, we have to follow these steps:
 * Initialize the Quadtree with the map size rect.
