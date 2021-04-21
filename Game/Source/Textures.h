@@ -2,8 +2,7 @@
 #define __TEXTURES_H__
 
 #include "Module.h"
-
-#include "List.h"
+#include <list>
 
 struct SDL_Texture;
 struct SDL_Surface;
@@ -27,14 +26,14 @@ public:
 	bool CleanUp();
 
 	// Load Texture
-	SDL_Texture* const Load(const char* path);
-	SDL_Texture* const LoadSurface(SDL_Surface* surface);
-	bool UnLoad(SDL_Texture* texture);
-	void GetSize(const SDL_Texture* texture, uint& width, uint& height) const;
+	SDL_Texture* const	Load(const char* path);
+	bool				UnLoad(SDL_Texture* texture);
+	SDL_Texture* const	LoadSurface(SDL_Surface* surface);
+	void				GetSize(const SDL_Texture* texture, uint& width, uint& height) const;
 
 public:
 
-	List<SDL_Texture*> textures;
+	std::list<SDL_Texture*>	textures;
 };
 
 

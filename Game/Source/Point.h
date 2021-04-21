@@ -1,8 +1,11 @@
+// ----------------------------------------------------
+// Point class    -----------
+// ----------------------------------------------------
+
 #ifndef __POINT_H__
 #define __POINT_H__
 
 #include "Defs.h"
-
 #include <math.h>
 
 template<class TYPE>
@@ -56,6 +59,16 @@ public:
 		return(r);
 	}
 
+	Point operator * (const float mult) const
+	{
+		Point r;
+
+		r.x = x * mult;
+		r.y = y * mult;
+
+		return(r);
+	}
+
 	const Point& operator -=(const Point &v)
 	{
 		x -= v.x;
@@ -69,7 +82,7 @@ public:
 		x += v.x;
 		y += v.y;
 
-		return(*this);
+		return (*this);
 	}
 
 	bool operator ==(const Point& v) const
@@ -81,6 +94,7 @@ public:
 	{
 		return (x != v.x || y != v.y);
 	}
+
 
 	// Utils ------------------------------------------------
 	bool IsZero() const

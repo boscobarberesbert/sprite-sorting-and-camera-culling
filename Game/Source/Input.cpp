@@ -1,21 +1,22 @@
+#include "Defs.h"
+#include "Log.h"
 #include "App.h"
 #include "Input.h"
 #include "Window.h"
-
-#include "Defs.h"
-#include "Log.h"
-
+#include "Render.h"
 #include "SDL/include/SDL.h"
+
+#include "Brofiler\Brofiler.h"
 
 #define MAX_KEYS 300
 
 Input::Input() : Module()
 {
-	name.Create("input");
+	name.assign("input");
 
-	keyboard = new KeyState[MAX_KEYS];
-	memset(keyboard, KEY_IDLE, sizeof(KeyState) * MAX_KEYS);
-	memset(mouseButtons, KEY_IDLE, sizeof(KeyState) * NUM_MOUSE_BUTTONS);
+	keyboard = new j1KeyState[MAX_KEYS];
+	memset(keyboard, KEY_IDLE, sizeof(j1KeyState) * MAX_KEYS);
+	memset(mouse_buttons, KEY_IDLE, sizeof(j1KeyState) * NUM_MOUSE_BUTTONS);
 }
 
 // Destructor
@@ -50,8 +51,10 @@ bool Input::Start()
 // Called each loop iteration
 bool Input::PreUpdate()
 {
-	static SDL_Event event;
+	BROFILER_CATEGORY("PreUpdateInput", Profiler::Color::Yellow);
 
+	static SDL_Event event;
+	
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
 	for(int i = 0; i < MAX_KEYS; ++i)
@@ -74,11 +77,11 @@ bool Input::PreUpdate()
 
 	for(int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
 	{
-		if(mouseButtons[i] == KEY_DOWN)
-			mouseButtons[i] = KEY_REPEAT;
+		if(mouse_buttons[i] == KEY_DOWN)
+			mouse_buttons[i] = KEY_REPEAT;
 
-		if(mouseButtons[i] == KEY_UP)
-			mouseButtons[i] = KEY_IDLE;
+		if(mouse_buttons[i] == KEY_UP)
+			mouse_buttons[i] = KEY_IDLE;
 	}
 
 	while(SDL_PollEvent(&event) != 0)
@@ -110,22 +113,19 @@ bool Input::PreUpdate()
 			break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				mouseButtons[event.button.button - 1] = KEY_DOWN;
-				//LOG("Mouse button %d down", event.button.button-1);
+				mouse_buttons[event.button.button - 1] = KEY_DOWN;
 			break;
 
 			case SDL_MOUSEBUTTONUP:
-				mouseButtons[event.button.button - 1] = KEY_UP;
-				//LOG("Mouse button %d up", event.button.button-1);
+				mouse_buttons[event.button.button - 1] = KEY_UP;
 			break;
 
 			case SDL_MOUSEMOTION:
 				int scale = app->win->GetScale();
-				mouseMotionX = event.motion.xrel / scale;
-				mouseMotionY = event.motion.yrel / scale;
-				mouseX = event.motion.x / scale;
-				mouseY = event.motion.y / scale;
-				//LOG("Mouse motion x %d y %d", mouse_motion_x, mouse_motion_y);
+				mouse_motion_x = event.motion.xrel / scale;
+				mouse_motion_y = event.motion.yrel / scale;
+				mouse_x = event.motion.x / scale;
+				mouse_y = event.motion.y / scale;
 			break;
 		}
 	}
@@ -141,20 +141,26 @@ bool Input::CleanUp()
 	return true;
 }
 
-
-bool Input::GetWindowEvent(EventWindow ev)
+// ---------
+bool Input::GetWindowEvent(j1EventWindow ev)
 {
 	return windowEvents[ev];
 }
 
 void Input::GetMousePosition(int& x, int& y)
 {
-	x = mouseX;
-	y = mouseY;
+	x = mouse_x;
+	y = mouse_y;
 }
 
 void Input::GetMouseMotion(int& x, int& y)
 {
-	x = mouseMotionX;
-	y = mouseMotionY;
+	x = mouse_motion_x;
+	y = mouse_motion_y;
+}
+
+void Input::GetWorldMousePosition(int& x, int& y)
+{
+	x = app->render->ScreenToWorld(mouse_x, mouse_y).x;
+	y = app->render->ScreenToWorld(mouse_x, mouse_y).y;
 }

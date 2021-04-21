@@ -21,27 +21,34 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
-	// Changae title
-	void SetTitle(const char* title);
+	// Change title
+	void SetNewTitle(const char* new_title);
+	void AddStringToTitle(const char* add_title);
+	void ClearTitle();
 
 	// Retrive window size
-	void GetWindowSize(uint& width, uint& height) const;
+	uint GetWindowWidth() const;
+	uint GetWindowHeight() const;
 
 	// Retrieve window scale
 	uint GetScale() const;
 
+	void SetScale(int scale);
+
 public:
-	// The window we'll be rendering to
+	//The window we'll be rendering to
 	SDL_Window* window;
 
-	// The surface contained by the window
-	SDL_Surface* screenSurface;
+	//The surface contained by the window
+	SDL_Surface* screen_surface;
+
+	bool fullscreen;
 
 private:
-	SString title;
-	uint width;
-	uint height;
-	uint scale;
+	std::string	title;
+	uint		width;
+	uint		height;
+	uint		scale;
 };
 
 #endif // __WINDOW_H__

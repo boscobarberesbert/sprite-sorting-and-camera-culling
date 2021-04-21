@@ -1,16 +1,15 @@
+#include "Defs.h"
+#include "Log.h"
 #include "App.h"
 #include "Render.h"
 #include "Textures.h"
 
-#include "Defs.h"
-#include "Log.h"
-
 #include "SDL_image/include/SDL_image.h"
-//#pragma comment(lib, "../Game/Source/External/SDL_image/libx86/SDL2_image.lib")
+//#pragma comment( lib, "SDL_image/libx86/SDL2_image.lib" )
 
 Textures::Textures() : Module()
 {
-	name.Create("textures");
+	name.assign("textures");
 }
 
 // Destructor
@@ -22,8 +21,7 @@ bool Textures::Awake(pugi::xml_node& config)
 {
 	LOG("Init Image library");
 	bool ret = true;
-
-	// Load support for the PNG image format
+	// load support for the PNG image format
 	int flags = IMG_INIT_PNG;
 	int init = IMG_Init(flags);
 
@@ -48,14 +46,13 @@ bool Textures::Start()
 bool Textures::CleanUp()
 {
 	LOG("Freeing textures and Image library");
-	ListItem<SDL_Texture*>* item;
 
-	for(item = textures.start; item != NULL; item = item->next)
+	for(std::list<SDL_Texture*>::iterator item = textures.begin(); item != textures.end(); ++item)
 	{
-		SDL_DestroyTexture(item->data);
+		SDL_DestroyTexture(*item);
 	}
 
-	textures.Clear();
+	textures.clear();
 	IMG_Quit();
 	return true;
 }
@@ -82,18 +79,18 @@ SDL_Texture* const Textures::Load(const char* path)
 // Unload texture
 bool Textures::UnLoad(SDL_Texture* texture)
 {
-	ListItem<SDL_Texture*>* item;
 
-	for(item = textures.start; item != NULL; item = item->next)
+	for (std::list<SDL_Texture*>::iterator item = textures.begin(); item != textures.end(); ++item)
 	{
-		if(texture == item->data)
+		if(texture == *item)
 		{
-			SDL_DestroyTexture(item->data);
-			textures.Del(item);
+			SDL_DestroyTexture(*item);
+			textures.remove(*item);
 			return true;
 		}
 	}
 
+	LOG("Cannot unload texture %i", texture);
 	return false;
 }
 
@@ -108,7 +105,7 @@ SDL_Texture* const Textures::LoadSurface(SDL_Surface* surface)
 	}
 	else
 	{
-		textures.Add(texture);
+		textures.push_back(texture);
 	}
 
 	return texture;

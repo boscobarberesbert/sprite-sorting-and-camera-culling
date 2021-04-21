@@ -1,15 +1,16 @@
+#include "Defs.h"
+#include "Log.h"
 #include "App.h"
 #include "Window.h"
 #include "Render.h"
 
-#include "Defs.h"
-#include "Log.h"
+#include "Brofiler\Brofiler.h"
 
 #define VSYNC true
 
 Render::Render() : Module()
 {
-	name.Create("renderer");
+	name.assign("renderer");
 	background.r = 0;
 	background.g = 0;
 	background.b = 0;
@@ -25,7 +26,7 @@ bool Render::Awake(pugi::xml_node& config)
 {
 	LOG("Create SDL rendering context");
 	bool ret = true;
-
+	// load flags
 	Uint32 flags = SDL_RENDERER_ACCELERATED;
 
 	if(config.child("vsync").attribute("value").as_bool(true) == true)
@@ -43,10 +44,10 @@ bool Render::Awake(pugi::xml_node& config)
 	}
 	else
 	{
-		camera.w = app->win->screenSurface->w;
-		camera.h = app->win->screenSurface->h;
-		camera.x = 0;
-		camera.y = 0;
+		camera.w = app->win->screen_surface->w;
+		camera.h = app->win->screen_surface->h;
+		camera.x = config.child("render").child("camera").attribute("camera_x").as_int();
+		camera.y = config.child("render").child("camera").attribute("camera_y").as_int();
 	}
 
 	return ret;
@@ -56,27 +57,33 @@ bool Render::Awake(pugi::xml_node& config)
 bool Render::Start()
 {
 	LOG("render start");
-	// back background
-	SDL_RenderGetViewport(renderer, &viewport);
+
 	return true;
 }
 
 // Called each loop iteration
 bool Render::PreUpdate()
 {
+	BROFILER_CATEGORY("PreUpdateRender", Profiler::Color::Yellow);
+
 	SDL_RenderClear(renderer);
 	return true;
 }
 
 bool Render::Update(float dt)
 {
+	BROFILER_CATEGORY("UpdateRender", Profiler::Color::Red);
+
 	return true;
 }
 
 bool Render::PostUpdate()
 {
+	BROFILER_CATEGORY("PostUpdateRender", Profiler::Color::Green);
+
 	SDL_SetRenderDrawColor(renderer, background.r, background.g, background.g, background.a);
 	SDL_RenderPresent(renderer);
+	app->win->ClearTitle();
 	return true;
 }
 
@@ -88,28 +95,67 @@ bool Render::CleanUp()
 	return true;
 }
 
-void Render::SetBackgroundColor(SDL_Color color)
+SDL_Rect Render::CameraInitPos() {
+	camera.x = 0;
+	camera.y = 0;
+
+	return camera;
+}
+
+// Load Game State
+bool Render::Load(pugi::xml_node& data)
+{
+	camera.x = data.child("camera").attribute("x").as_int();
+	camera.y = data.child("camera").attribute("y").as_int();
+
+	return true;
+}
+
+// Save Game State
+bool Render::Save(pugi::xml_node& data) const
+{
+	pugi::xml_node cam = data.append_child("camera");
+
+	cam.append_attribute("x") = camera.x;
+	cam.append_attribute("y") = camera.y;
+
+	return true;
+}
+
+void Render::SetBackgroundColor(const SDL_Color &color)
 {
 	background = color;
 }
 
-void Render::SetViewPort(const SDL_Rect& rect)
+bool Render::IsInCamera(const int &x, const int &y, const int &w, const int &h) const
 {
-	SDL_RenderSetViewport(renderer, &rect);
+	int scale = app->win->GetScale();
+
+	SDL_Rect cam = { -camera.x, -camera.y, camera.w, camera.h };
+	SDL_Rect r = { x * scale, y * scale, w * scale, h * scale };
+
+	return SDL_HasIntersection(&r, &cam);
 }
 
-void Render::ResetViewPort()
+iPoint Render::ScreenToWorld(int x, int y) const
 {
-	SDL_RenderSetViewport(renderer, &viewport);
+	iPoint ret;
+	int scale = app->win->GetScale();
+
+	ret.x = (x - camera.x / scale);
+	ret.y = (y - camera.y / scale);
+
+	return ret;
 }
 
 // Blit to screen
-bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, double angle, int pivotX, int pivotY) const
+bool Render::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed, bool apply_scale, SDL_RendererFlip flip, double angle, int pivot_x, int pivot_y)
 {
 	bool ret = true;
 	uint scale = app->win->GetScale();
 
 	SDL_Rect rect;
+
 	rect.x = (int)(camera.x * speed) + x * scale;
 	rect.y = (int)(camera.y * speed) + y * scale;
 
@@ -123,20 +169,23 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* sec
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	rect.w *= scale;
-	rect.h *= scale;
+	if (apply_scale) {
+		rect.w *= scale;
+		rect.h *= scale;
+	}
+
 
 	SDL_Point* p = NULL;
 	SDL_Point pivot;
 
-	if(pivotX != INT_MAX && pivotY != INT_MAX)
+	if(pivot_x != INT_MAX && pivot_y != INT_MAX)
 	{
-		pivot.x = pivotX;
-		pivot.y = pivotY;
+		pivot.x = pivot_x;
+		pivot.y = pivot_y;
 		p = &pivot;
 	}
 
-	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, SDL_FLIP_NONE) != 0)
+	if(SDL_RenderCopyEx(renderer, texture, section, &rect, angle, p, flip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());
 		ret = false;
@@ -145,7 +194,7 @@ bool Render::DrawTexture(SDL_Texture* texture, int x, int y, const SDL_Rect* sec
 	return ret;
 }
 
-bool Render::DrawRectangle(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool filled, bool use_camera) const
+bool Render::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool filled, bool use_camera) const
 {
 	bool ret = true;
 	uint scale = app->win->GetScale();
@@ -200,6 +249,7 @@ bool Render::DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b,
 bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera) const
 {
 	bool ret = true;
+
 	uint scale = app->win->GetScale();
 
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -212,8 +262,8 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 
 	for(uint i = 0; i < 360; ++i)
 	{
-		points[i].x = (int)(x + radius * cos(i * factor));
-		points[i].y = (int)(y + radius * sin(i * factor));
+		points[i].x = (int)(camera.x + x * scale + radius * cos(i * factor));
+		points[i].y = (int)(camera.y + y * scale + radius * sin(i * factor));
 	}
 
 	result = SDL_RenderDrawPoints(renderer, points, 360);
@@ -226,3 +276,4 @@ bool Render::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uin
 
 	return ret;
 }
+

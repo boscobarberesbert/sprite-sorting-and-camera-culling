@@ -1,11 +1,19 @@
+// ----------------------------------------------------
+// Module.h
+// Interface for all engine modules
+// ----------------------------------------------------
+
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
-#include "SString.h"
-
-#include "PugiXml/src/pugixml.hpp"
+#include <string>
+#include "PugiXml\src\pugixml.hpp"
 
 class App;
+struct Collider;
+
+class UIElement;
+enum MouseEvent;
 
 class Module
 {
@@ -20,7 +28,6 @@ public:
 	}
 
 	// Called before render is available
-	// L01: DONE 5: Sending config file to all modules
 	virtual bool Awake(pugi::xml_node&)
 	{
 		return true;
@@ -56,10 +63,27 @@ public:
 		return true;
 	}
 
+	virtual bool Load(pugi::xml_node&)
+	{
+		return true;
+	}
+
+	virtual bool Save(pugi::xml_node&) const
+	{
+		return true;
+	}
+
+	virtual void OnCollision(Collider*, Collider*)
+	{
+
+	}
+
+	virtual void UI_Events(UIElement* element) {}
+
 public:
 
-	SString name;
-	bool active;
+	std::string	name;
+	bool		active;
 
 };
 

@@ -9,7 +9,7 @@
 
 struct SDL_Rect;
 
-enum EventWindow
+enum j1EventWindow
 {
 	WE_QUIT = 0,
 	WE_HIDE = 1,
@@ -17,7 +17,7 @@ enum EventWindow
 	WE_COUNT
 };
 
-enum KeyState
+enum j1KeyState
 {
 	KEY_IDLE = 0,
 	KEY_DOWN,
@@ -47,32 +47,36 @@ public:
 	// Called before quitting
 	bool CleanUp();
 
+	// Gather relevant win events
+	bool GetWindowEvent(j1EventWindow ev);
+
 	// Check key states (includes mouse and joy buttons)
-	KeyState GetKey(int id) const
+	j1KeyState GetKey(int id) const
 	{
 		return keyboard[id];
 	}
 
-	KeyState GetMouseButtonDown(int id) const
+	j1KeyState GetMouseButtonDown(int id) const
 	{
-		return mouseButtons[id - 1];
+		return mouse_buttons[id - 1];
 	}
 
 	// Check if a certain window event happened
-	bool GetWindowEvent(EventWindow ev);
+	bool GetWindowEvent(int code);
 
 	// Get mouse / axis position
 	void GetMousePosition(int &x, int &y);
 	void GetMouseMotion(int& x, int& y);
+	void GetWorldMousePosition(int &x, int &y);
 
 private:
-	bool windowEvents[WE_COUNT];
-	KeyState*	keyboard;
-	KeyState mouseButtons[NUM_MOUSE_BUTTONS];
-	int	mouseMotionX;
-	int mouseMotionY;
-	int mouseX;
-	int mouseY;
+	bool		windowEvents[WE_COUNT];
+	j1KeyState*	keyboard;
+	j1KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
+	int			mouse_motion_x;
+	int			mouse_motion_y;
+	int			mouse_x;
+	int			mouse_y;
 };
 
 #endif // __INPUT_H__

@@ -1,16 +1,17 @@
-#include "App.h"
+#include <stdlib.h>
 
 #include "Defs.h"
 #include "Log.h"
+#include "App.h"
 
-// NOTE: SDL redefines main function
+// This is needed here because SDL redefines main function
+// do not add any other libraries here, instead put them in their modules
 #include "SDL/include/SDL.h"
+//#pragma comment( lib, "SDL/libx86/SDL2.lib" )
+//#pragma comment( lib, "SDL/libx86/SDL2main.lib" )
 
-// NOTE: Library linkage is configured in Linker Options
-//#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2.lib")
-//#pragma comment(lib, "../Game/Source/External/SDL/libx86/SDL2main.lib")
-
-#include <stdlib.h>
+#include "Brofiler/Brofiler.h"
+//#pragma comment (lib, "Brofiler/ProfilerCore32.lib")
 
 enum MainState
 {
@@ -27,15 +28,16 @@ App* app = NULL;
 
 int main(int argc, char* args[])
 {
-	LOG("Engine starting ...");
+	LOG("Engine starting ... %d");
 
-	MainState state = CREATE;
+	MainState state = MainState::CREATE;
 	int result = EXIT_FAILURE;
 
 	while(state != EXIT)
 	{
 		switch(state)
 		{
+
 			// Allocate the engine --------------------------------------------
 			case CREATE:
 			LOG("CREATION PHASE ===============================");
@@ -79,8 +81,11 @@ int main(int argc, char* args[])
 
 			// Loop all modules until we are asked to leave ---------------------
 			case LOOP:
-			if(app->Update() == false)
-				state = CLEAN;
+			{
+				BROFILER_FRAME("MainThread");
+				if (app->Update() == false)
+					state = CLEAN;
+			}
 			break;
 
 			// Cleanup allocated memory -----------------------------------------

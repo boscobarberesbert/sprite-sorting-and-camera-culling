@@ -1,10 +1,11 @@
 #ifndef __APP_H__
 #define __APP_H__
 
+#include <list>
 #include "Module.h"
-#include "List.h"
-
-#include "PugiXml/src/pugixml.hpp"
+#include "PerfTimer.h"
+#include "Timer.h"
+#include "PugiXml\src\pugixml.hpp"
 
 // Modules
 class Window;
@@ -13,6 +14,27 @@ class Render;
 class Textures;
 class Audio;
 class Scene;
+class Colliders;
+class Map;
+class FadeToBlack;
+class EntityManager;
+class PathFinding;
+class Fonts;
+class Gui;
+class MainMenu;
+
+
+enum Levels
+{
+	MENU = 0,
+	CREDITS,
+	TUTORIAL,
+	FIRST_LEVEL,
+	SECOND_LEVEL,
+	
+};
+
+
 
 class App
 {
@@ -45,11 +67,13 @@ public:
 	const char* GetTitle() const;
 	const char* GetOrganization() const;
 
+	// Load config file
+	pugi::xml_node LoadConfig(pugi::xml_document&) const;
+
+
 private:
 
-	// Load config file
-	bool LoadConfig();
-
+	
 	// Call modules before each loop iteration
 	void PrepareUpdate();
 
@@ -65,36 +89,53 @@ private:
 	// Call modules after each loop iteration
 	bool PostUpdate();
 
+	// Load / Save
+	bool LoadGameNow();
+	bool SavegameNow() const;
+
 public:
 
 	// Modules
-	Window* win;
-	Input* input;
-	Render* render;
-	Textures* tex;
-	Audio* audio;
-	Scene* scene;
+	Window*			win;
+	Input*			input;
+	Render*			render;
+	Textures*			tex;
+	Audio*			audio;
+	Scene*			scene;
+	Colliders*		collider;
+	Map*				map;
+	FadeToBlack*      fade;
+	EntityManager*	entities;
+	PathFinding*		pathfinding;
+	Fonts*			fonts;
+	Gui*				gui;
+	MainMenu*         menu;
 
 private:
 
-	int argc;
-	char** args;
-	SString title;
-	SString organization;
+	std::list<Module*>	modules;
+	uint					frames;
+	float					dt;
+	int						argc;
+	char**					args;
 
-	List<Module *> modules;
+	std::string			title;
+	std::string			organization;
 
-	// TODO 2: Create new variables from pugui namespace:
-	// a xml_document to store the config file and
-	// two xml_node to read specific branches of the xml
-	pugi::xml_document configFile;
-	pugi::xml_node config;
-	pugi::xml_node configApp;
+	uint32				framerate_cap = 0;
+	bool				cap_framerate = true;
+	PerfTimer			ptimer;
+	uint64				frame_count = 0;
+	Timer				startup_time;
+	Timer				frame_time;
+	Timer				last_sec_frame_time;
+	uint32				last_sec_frame_count = 0;
+	uint32				prev_last_sec_frame_count = 0;
 
-	uint frames;
-	float dt;
+	public:
+		bool				quit_game = false;
 };
 
 extern App* app;
 
-#endif	// __APP_H__
+#endif
