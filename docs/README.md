@@ -844,7 +844,7 @@ Inside the quadtree we will need the following 5 functions:
 * **Split():** This function divides the parent node into 4 children nodes when the current node reaches the maximum number of entities.
 * **Insert():** This function inserts all the entities in their appropriate child and if it's necessary calls the Split() function.
 * **ColliderList():** This function receives an entity and returns a list with all the entities that the collider manager will have to check.
-* **CheckBoundaries()** Check if two rectangles are colliding.
+* **CheckBoundaries():** Check if two rectangles are colliding.
 
 As I've said before, a quadtree is a tree structure, which means that you start in a node and from that node you go to its childrens. The faster way to do it is using recursive functions. The class template will be something like this one:
 
