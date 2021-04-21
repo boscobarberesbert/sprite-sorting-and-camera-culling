@@ -5,7 +5,6 @@ I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876
 In this website you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
 
 This research will solve the following questions and provide help to implement them in your code:
-
 * Do you want to change manually all your code every time you want to print something in a different order or you prefer an automatic method?
 * It's necessary to print every tile, entity, object, particle or any other element that isn't seen on the screen?
 * If I have two entities, one in each side of the screen, do you want to check if they are colliding? What if you have thousands of entities?
@@ -140,10 +139,9 @@ That could consume more resources than we expected, because we must sort a lot o
 We want to have a list with all the sprites already sorted in order to render before entities above. To do that there is a function in the ```<algorithm>``` library to sort vectors. The function is ```sort()```.
 
 In order to properly sort the list (vector), this function needs 3 parameters as arguments:
-
-**1. Beginning of a vector.**
-**2. End of a vector.**
-**3. A bool function that receives two elements of the vector as arguments and returns true or false depending on the priority we have implemented. This function will determine which element have to be placed before in the vector.**
+* **1. Beginning of a vector.**
+* **2. End of a vector.**
+* **3. A bool function that receives two elements of the vector as arguments and returns true or false depending on the priority we have implemented. This function will determine which element have to be placed before in the vector.**
 
 To create this function, we have to take into account the logic of our sprite sorting. In our case, it will depend on the Y position of our pivot.
 The logic of the function is actually very simple. It is created on ```EntityManager::SortByYPos``` and sorts the position of an entity.
@@ -842,7 +840,6 @@ This is all with this small implementation we will save a lot of calculations an
 #### Quadtree in C++
 
 Inside the quadtree we will need the following 5 functions:
-
 * **Clear():** This function deletes all the entities inside the nodes.
 * **Split():** This function divides the parent node into 4 children nodes when the current node reaches the maximum number of entities.
 * **Insert():** This function inserts all the entities in their appropriate child and if it's necessary calls the Split() function.
@@ -908,7 +905,6 @@ When talking about sprite sorting, another algorithm that is also very used is t
 Now it's time to implement that in C++. The first thing that we have to do is to create a new class called "ObjectToPrint". The variables of this class will be the same as the parameters of your render funtion (position x and y, scale, rectangle...) and the new parameter Z or priority.
 
 The ```priority_queue``` will need 3 parameters:
-
 * **1. [T] Type of elements in the queue.**
 * **2. [Container vector] Type of container to store the data.**
 * **3. [Compare] A binary predicate that takes two elements (of type T) as arguments and returns a bool. It determines which of the two elements has to go before the other.**
@@ -940,7 +936,6 @@ std::priority_queue <ObjectToPrint*, vector<ObjectToPrint*>, OrderPriority> Spri
 ```
 
 After doing that we will be able to implement the priority_queue with our 3 parameters:
-
 * **1. The class that we created.**
 * **2. A vector of the class that we created.**
 * **3. The struct that we created with the boolean opperator.**
