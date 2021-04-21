@@ -843,6 +843,7 @@ In that case, I will separate links in two sections, because sorting in isometri
 ## Camera Culling
 
 * [Camera culling](https://www.youtube.com/watch?v=zCaurIC49I4)
+* [Camera culling idea](https://www.youtube.com/watch?v=zCaurIC49I4)
 
 ### Spatial partition and Quadtree
 
@@ -853,6 +854,11 @@ In that case, I will separate links in two sections, because sorting in isometri
 * [Quadtree explanation and pseudocode](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
 * [C++ Quadtree Class repository](https://github.com/MarcusMathiassen/P2D/tree/master/src)
 * [Quadtree explanation](https://stackoverflow.com/questions/41946007/efficient-and-well-explained-implementation-of-a-quadtree-for-2d-collision-det)
+* [Quadtree collision optimization:](https://www.youtube.com/embed/TJzq_kjtGTc) This video shows how many times we reduce the amount of collisions checkings.
+* [Easy way to create your Quadtree class and implementate it](https://gamedevelopment.tutsplus.com/tutorials/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space--gamedev-374)
+* [Efficient and well explained quadtree collision](https://stackoverflow.com/questions/41946007/efficient-and-well-explained-implementation-of-a-quadtree-for-2d-collision-det)
+* [What is a Quadtree? (spanish version)](https://www.genbetadev.com/programacion-de-videojuegos/teoria-de-colisiones-2d-quadtree)
+* [Spatial partition tutorial](https://www.youtube.com/watch?v=RN1GRX2ByLM&t=1950s)
 
 # Author
 
