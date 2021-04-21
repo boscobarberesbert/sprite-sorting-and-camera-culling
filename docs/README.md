@@ -5,6 +5,7 @@ I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876
 In this website you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
 
 This research will solve the following questions and provide help to implement them in your code:
+
 * Do you want to change manually all your code every time you want to print something in a different order or you prefer an automatic method?
 * It's necessary to print every tile, entity, object, particle or any other element that isn't seen on the screen?
 * If I have two entities, one in each side of the screen, do you want to check if they are colliding? What if you have thousands of entities?
@@ -133,6 +134,27 @@ So, that’s what you do:
 If some object doesn’t have boundingBox, you can think like its **boundingBox.top + boundingBox.width equals 0**. 
 
 That could consume more resources than we expected, because we must sort a lot of objects. Remember that we are doing it each and every frame with all the objects and entities we have, including static and dynamic entities. Although that, if this approach is selected there is no other way to do it, because remember that not only the player can change its position, but also the enemies, NPCs or any other element we have around the map; and this has to be taken into account and sorted every frame. In order to optimize, we have implemented a camera culling, in order to sort and render only the entities on camera (on screen). Also, it depends on the entity types and how are saved. The sorting method also influences.
+
+##### How do we implement sprite sorting by position in our game?
+
+We want to have a list with all the sprites already sorted in order to render before entities above. To do that there is a function in the ```<algorithm>``` library to sort vectors. The function is ```sort()```.
+
+In order to properly sort the list (vector), this function needs 3 parameters as arguments:
+
+**1. Beginning of a vector.**
+**2. End of a vector.**
+**3. A bool function that receives two elements of the vector as arguments and returns true or false depending on the priority we have implemented. This function will determine which element have to be placed before in the vector.**
+
+To create this function, we have to take into account the logic of our sprite sorting. In our case, it will depend on the Y position of our pivot.
+The logic of the function is actually very simple. It is created on ```EntityManager::SortByYPos``` and sorts the position of an entity.
+
+```cpp
+static bool SortByYPos(const Entity* ent1, const Entity* ent2) {
+	return ent1->pivot.y + ent1->position.y < ent2->pivot.y + ent2->position.y;
+}
+```
+
+Later we will see the implementation more in depth.
 
 #### By Colliders
 
@@ -801,6 +823,7 @@ In this way we once again have a small number of nodes in each quadrant that bec
 This question will depend on the size of the map and the objects, but it would be advisable not to have more than 10 objects per quadrant, which is 10 x 10 = 100 checks. The same with the number of subdivisions, it would be good to establish a maximum number in which a Quadtree can be subdivided into another Quadtree, as before everything will depend on the size of the map of our game, but after 5 levels it can start to be excessive.
 
 #### Special case
+
 Let's look at the object marked in red in our representation:
 
 <p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_5.png?raw=true"></p>
@@ -814,7 +837,7 @@ We do not put these objects that remain on the lines in any of the child quadran
 
 This is all with this small implementation we will save a lot of calculations and checks and we will make our game more fluid. I leave you a video with an example implemented in SFML.
 
-<iframe width="100%" height="100" src="https://www.youtube.com/embed/TJzq_kjtGTc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="100%" src="https://www.youtube.com/embed/TJzq_kjtGTc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 #### Quadtree in C++
 
@@ -886,11 +909,9 @@ Now it's time to implement that in C++. The first thing that we have to do is to
 
 The ```priority_queue``` will need 3 parameters:
 
-**1. [T] Type of elements in the queue.**
-
-**2. [Container vector] Type of container to store the data.**
-
-**3. [Compare] A binary predicate that takes two elements (of type T) as arguments and returns a bool. It determines which of the two elements has to go before the other.**
+* **1. [T] Type of elements in the queue.**
+* **2. [Container vector] Type of container to store the data.**
+* **3. [Compare] A binary predicate that takes two elements (of type T) as arguments and returns a bool. It determines which of the two elements has to go before the other.**
 
 The syntaxis would look something like that:
 
@@ -920,19 +941,17 @@ std::priority_queue <ObjectToPrint*, vector<ObjectToPrint*>, OrderPriority> Spri
 
 After doing that we will be able to implement the priority_queue with our 3 parameters:
 
-**1. The class that we created.**
-
-**2. A vector of the class that we created.**
-
-**3. The struct that we created with the boolean opperator.**
+* **1. The class that we created.**
+* **2. A vector of the class that we created.**
+* **3. The struct that we created with the boolean opperator.**
 
 With that we will be able to order our sprites, the only thing that is left to do is to create 2 functions.
 The first function will have to create an element of the class we created and and push it into the priority queue.
 The second function will be the one that will take the elements that are in the queue in the correct order, send them to the renderer and pop them form the queue.
 
 Now that we have defined the priority queue we have to create a method that fills it and then, when all the frame logic has been done, print the sprites in the correct order. This can be done in two steps:
-* **void FillQueue():** This function has to replace our render function, because now we are going to send the sprites to the queue before the rendering. This function has to have the same arguments as our render funtion. It has to create a new ```ObjectToPrint``` element and push it to the queue using SpriteOrdererQueue.push(ObjectToPrint*).
 
+* **void FillQueue():** This function has to replace our render function, because now we are going to send the sprites to the queue before the rendering. This function has to have the same arguments as our render funtion. It has to create a new ```ObjectToPrint``` element and push it to the queue using SpriteOrdererQueue.push(ObjectToPrint*).
 * **Render the Queue:** Once our priority queue has all your sprites in the correct order, it's time to render the sprites. You have to modify your Render function. Our render function now will recieve your priority queue as a parameter and it will have to render our sprites one by one while our queue is not empty. Remember to make pop of each element that has been printed. 
 
 After that is done we will have our sprite ordering system. Now we should be able to see our sprites rendered as we wanted.
