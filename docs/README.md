@@ -752,6 +752,8 @@ In order to reduce that amount of operations we can implement something called s
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/space_partitioning_2.png?raw=true" width="200">
 </p>
 
+In order to solve this problem and to divide the cells into smaller pieces we will have to create a class called ```Quadtree```.
+
 One of the main problems with the collision system is that in each interaction we have to check if each object is colliding with the rest of the objects in our game. For example, if we have 100 objects in our games, it would give us 100 x 100 = 10.000 collision **checks** in each loop of our game, which is outrageous for 100 objects. Let's see how we can optimize this.
 
 Imagine that we have a scenario like the following one, where the blue dots are objects in our world.
@@ -764,7 +766,7 @@ Let's say the objects are moving at a speed of about 10px per second. Perhaps we
 
 **Quadtrees** are a type of data structure in which each node has four child nodes, it would be something similar to a binary tree, but instead of two branches with **four branches**.
 
-In order to solve this problem and to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
+Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
 Basically, a quadtree is an other type of space partitioning, but instead of having a static grid of nodes or cells where the game calculates the collisions of all the entities that are inside, it generates automatically its own partitions. It's a tree data structure, which are one of the fastest data structures. Now I'm going to develop an accurate description of how it works.
 
 * First we have a number of entities in our map, lets say 3. This number will be the maximum number of entities that can be inside a rect.
