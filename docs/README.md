@@ -739,7 +739,7 @@ static bool SortByYPos(const Entity* ent1, const Entity* ent2) {
 
 Once we have done that we will have our camera culling system implemented, the problem is that at this point it’s not going to be really efficient because we are going to be checking if every element on the map is inside of the camera and depending on the number of entities in the map, our game will have to do a lot of work.
 
-Checking a big number of collisions every frame there is a big waste of resources for our game. Every frame, our computer is checking if one entity is colliding with all the rest of the entities and the same for each entity. For example, if we have 200 entities and we want to know how many entities our game is going to check every frame, the solution is 200x200=40.000 operations. It's a really big number of operations.
+Checking a big number of collisions every frame there is a big waste of resources for our game. Every frame, our computer is checking if one entity is colliding with all the rest of the entities and the same for each entity.
 
 Here is the question: Do I have to calculate the collision between two objects that are very far one from each other? The answer is **NO** (if you are interested in optimizing your game).
 
@@ -752,7 +752,7 @@ In order to reduce that amount of operations we can implement something called s
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/space_partitioning_2.png?raw=true" width="200">
 </p>
 
-### Quadtree
+### Quadtrees
 
 In order to solve this problem and to divide the cells into smaller pieces we will have to create a class called ```Quadtree```. Quadtrees are a type of space partitioning that will allow us to divide the space in 4 smaller fragments of equal parts in order to divide the space into even smaller pieces, this way we won’t have the problem of having many entities in the same quadtree if those are close enough because the quadtree will divide the space in smaller cells to separate the entities.
 Basically, a quadtree is an other type of space partitioning, but instead of having a static grid of nodes or cells where the game calculates the collisions of all the entities that are inside, it generates automatically its own partitions. It's a tree data structure, which are one of the fastest data structures. Now I'm going to develop an accurate description of how it works.
@@ -761,22 +761,53 @@ Basically, a quadtree is an other type of space partitioning, but instead of hav
 * If you insert another entity in the map, then the quadtree starts working. It will divide our initial rect in 4 smaller rects. Now, the game will only calculate the collisions of the entities that are in the same new rects.
 * If you add more and more entities, the quadtree will be dividing more and more each rect in 4 smaller rects.
 
-<em>Quadtree ramifications represented</em>
-<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_scheme.png?raw=true"></p>
+One of the main problems with the collision system is that in each interaction we have to check if each object is colliding with the rest of the objects in our game. For example, if we have 100 objects in our games, it would give us 100 x 100 = 10.000 collision **checks** in each loop of our game, which is outrageous for 100 objects. Let's see how we can optimize this.
 
+Imagine that we have a scenario like the following one, where the blue dots are objects in our world.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_1.png?raw=true"></p>
+
+Let's say the objects are moving at a speed of about 10px per second. Perhaps we then need to compare if the objects in the upper left corner collide with each other, but it is totally unnecessary to check if they are both colliding with the object in the lower right corner, so how do we do it to rule out the collisions that we obviously know will not go to produce? The solution is the classic **divide and rule**.
+
+**Quadtrees** are a type of data structure in which each node has four child nodes, it would be something similar to a binary tree, but instead of two branches with **four branches**.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_scheme.png?raw=true"></p>
+<em>Quadtree ramifications represented</em>
+
+This can be used to separate our stage into four equal areas recursively, let's look at the Quadtree as follows.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_2.png?raw=true"></p>
+
+Now we would have a parent node that represents the entire scenario and four child nodes that subdivide it into four equal parts. Now what we have to do is tell our object something like: _check only the collisions with the objects that are in your quadrant_.
+
+With this we would already have our two upper objects in a single quadrant and we would avoid checking collisions with the object in the lower right corner.
+
+#### Adding depth
+
+Now let's imagine we add a few more objects to our world, such that it looks like this.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_3.png?raw=true"></p>
+
+It is clear that the upper left quadrant begins to have too many objects and it becomes too expensive to check all the collisions that happen in it. So the solution is to subdivide this quadrant in another Quadtree node.
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_4.png?raw=true"></p>
+
+In this way we once again have a small number of nodes in each quadrant that becomes much more manageable.
+
+#### From how many objects can I subdivide a quadrant?
+This question will depend on the size of the map and the objects, but it would be advisable not to have more than 10 objects per quadrant, which is 10 x 10 = 100 checks. The same with the number of subdivisions, it would be good to establish a maximum number in which a Quadtree can be subdivided into another Quadtree, as before everything will depend on the size of the map of our game, but after 5 levels it can start to be excessive.
+
+#### Special case
+Let's look at the object marked in red in our representation:
+
+<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_5.png?raw=true"></p>
 <em>Quadtree visual representation</em>
-<p align="center">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_1.png?raw=true">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_2.png?raw=true">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_3.png?raw=true">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_4.png?raw=true">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_5.png?raw=true">
-</p>
 
 As you can see, we are generating smaller regions in order to reduce the amount of collisions checkings. This is a gif that shows how it works in real time.
+
 <p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/quadtree_example.gif?raw=true"></p>
 
-### Quadtree in C++
+#### Quadtree in C++
 
 Inside the quadtree we will need the following 5 functions:
 
