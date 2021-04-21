@@ -34,7 +34,7 @@ On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that
 
 <p align="center">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/the_legend_of_zelda.gif?raw=true">
-<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pokemon.gif?raw=true">
 </p>
 
 ## Why is sprite sorting so important?
