@@ -753,7 +753,9 @@ If we want to implement our Quadtree class in a camera culling method, we have t
 
 # Alternatives
 
-When talking about sprite sorting, another algorithm that is also very used is the priority queue. In order to implement it, we have to use the Standard Template Library, which is going to let us use the ```priority_queue```. A priority queue is an abstract data type really similar to a normal queue but with the small difference that each elements inside of it has a certain priority. That means that the data that we insert inside the priority queue will be ordered from least to greatest according to the priority we gave each element. Basically, it reorders the elements that are stored inside with a predefined condition
+When talking about sprite sorting, another algorithm that is also very used is the priority queue. In order to implement it, we have to use the Standard Template Library, which is going to let us use the ```priority_queue```. A priority queue is an abstract data type really similar to a normal queue but with the small difference that each elements inside of it has a certain priority. That means that the data that we insert inside the priority queue will be ordered from least to greatest according to the priority we gave each element. Basically, it reorders the elements that are stored inside with a predefined condition.
+
+Now it's time to implement that in C++. The first thing that we have to do is to create a new class called "ObjectToPrint". The variables of this class will be the same as the parameters of your render funtion (position x and y, scale, rectangle...) and the new parameter Z or priority.
 
 The ```priority_queue``` will need 3 parameters:
 
