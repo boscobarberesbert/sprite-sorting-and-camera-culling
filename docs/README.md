@@ -814,7 +814,7 @@ We do not put these objects that remain on the lines in any of the child quadran
 
 This is all with this small implementation we will save a lot of calculations and checks and we will make our game more fluid. I leave you a video with an example implemented in SFML.
 
-<iframe width="100%" src="https://www.youtube.com/embed/TJzq_kjtGTc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="100%" height="100" src="https://www.youtube.com/embed/TJzq_kjtGTc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 #### Quadtree in C++
 
