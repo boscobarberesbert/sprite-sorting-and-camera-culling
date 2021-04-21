@@ -26,7 +26,7 @@ In games like _Super Mario_ or _Grand Theft Auto_ we can identify a sprite order
 For the same reason, _Grand Theft Auto_ does not have to sort sprites. We can follow the order of sprites like this: background->furniture->enemies->guns->player.
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/super_mario.gif?raw=true">
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/grand_theft_auto.gif?raw=true" width="500">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/grand_theft_auto.gif?raw=true" width="100%">
 
 On the other hand, we have games like _The Legend of Zelda_ and _Pokémon_, that are a good example of the beginning of sorting sprites in video games.
 
