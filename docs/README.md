@@ -60,19 +60,19 @@ There are some systems to sort sprites, it depends on the type of game, the reso
 So, what is **z-order**?
 Z-order is an ordering of overlapping 2d objects. Look at the picture:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/z-order.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/z-order.png?raw=true" width="500">
 
 **Rectangle B** is drawn after **rectangle A**. The result is **rectB** is drawn “above” **rectA**. **RectB** is said to have higher z-order than **rectA**. Really simple.
 
 ### Z-order in games
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_1.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_1.png?raw=true" width="500">
 
 _Screenshot from Legend of Zelda: A link to the Past (Nintendo, SNES)_
 
 You can tell that Link is behind that tree. But this is actually an illusion of depth achieved by using clever z-ordering. The tree is drawn after Link, so it has higher z-order.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_2.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_2.png?raw=true" width="500">
 
 And now Link is drawn after the tree. He has higher z-order and it looks like he’s standing closer to the camera. And here’s how you can achieve the same effect.
 
@@ -86,7 +86,7 @@ This is the laziest way to solve the sorting sprites problem, but also the one t
 
 This is actually how **A Link to the Past** does it(I don’t know about moving objects, but it surely uses layers for static objects. You can see it yourself if you swing your sword at different positions near houses, walls etc.).
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_3.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_3.png?raw=true" width="500">
 
 _Layer approach: By cutting sprites. We have to take into account that this method is not automatic._
 
@@ -112,11 +112,11 @@ Although that, since we may have sprites with different sizes (widths and height
 
 This is where it gets smarter. First, let’s look at collision bounding boxes:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_4.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_4.png?raw=true" width="500">
 
 Look at the Link’s bounding box. Its lowest Y coordinate is higher than tree’s and that’s why Link is drawn after the tree. And look at another situation. Now lowest Y coordinate of tree is higher, so you draw it after Link.
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_5.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_5.png?raw=true" width="500">
 
 So, that’s what you do:
 
@@ -150,7 +150,7 @@ This approach is common in isometric maps because it looks like a 3D environment
 Drawing something like arcs is trickier. It requires you to use two bounding boxes for each column. And how do you deal with the part which is above player?
 You need to use z axis for this. “Z” has nothing to do with z-order in the context. It tells you how far from the ground is **boundingBox** of an object (**z = 0** is ground level). Here’s how the arc can be separated:
 
-<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_6.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_6.png?raw=true" width="500">
 
 The algorithm is the same, but now you can sort by lowest Y coordinate for each Z and then combine them in one list sorted by Z. You’ll get something like this:
 
