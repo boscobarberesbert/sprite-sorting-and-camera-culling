@@ -217,7 +217,7 @@ Anyway, as in this project we are using SDL, we will take advantage of it and in
 
 <p align="center">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling_1.jpg?raw=true">
-<p align="center"><img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling_2.png?raw=true">
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/camera_culling_2.png?raw=true">
 </p>
 
 # Selected approach
