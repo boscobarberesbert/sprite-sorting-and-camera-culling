@@ -53,6 +53,29 @@ There are some systems to sort sprites, it depends on the type of game, the reso
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_3.jpg?raw=true">
 
+## Z-order as a concept
+
+### Basics
+
+So, what is **z-order**?
+Z-order is an ordering of overlapping 2d objects. Look at the picture:
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/z-order.png?raw=true">
+
+**Rectangle B** is drawn after **rectangle A**. The result is **rectB** is drawn “above” **rectA**. **RectB** is said to have higher z-order than **rectA**. Really simple.
+
+### Z-order in games
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_1.png?raw=true">
+
+_Screenshot from Legend of Zelda: A link to the Past (Nintendo, SNES)_
+
+You can tell that Link is behind that tree. But this is actually an illusion of depth achieved by using clever z-ordering. The tree is drawn after Link, so it has higher z-order.
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_2.png?raw=true">
+
+And now Link is drawn after the tree. He has higher z-order and it looks like he’s standing closer to the camera. And here’s how you can achieve the same effect.
+
 ### Cut sprites
 
 This is the laziest way to solve the sorting sprites problem, but also the one that can become a slow and cumbersome way in the long run. Although that, it can serve ample in many cases. It consists in separating a sprite in two parts, the lower part and the higher part. So, the core of the system is to render first the lower part, later all the entities, and finally the higher part. That system is good to mix static and dynamic entities, for example a building isometric game. There is an example of _Pocket City_ made. It is quite interesting and fits well in that project for the simplicity of the project, the isometric type map and the mobile resources. You can see the separated layers and the result, tinted to see where the cut is.
@@ -61,7 +84,18 @@ This is the laziest way to solve the sorting sprites problem, but also the one t
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_2.png?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_6.gif?raw=true">
 
-### Sorting layers
+This is actually how **A Link to the Past** does it(I don’t know about moving objects, but it surely uses layers for static objects. You can see it yourself if you swing your sword at different positions near houses, walls etc.).
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_3.png?raw=true">
+
+_Layer approach: By cutting sprites. We have to take into account that this method is not automatic._
+
+One sprite can be divided in two parts(as shown in the picture) which have different constant z-order. You draw all objects with **z = 0**, then with **z = 1**, etc.
+This method works good and it’s easy to implement, but after a while it becomes hard to maintain, because every time you add a new sprite you have to divide it by parts and calculate areas which must be drawn before of after player and other objects.
+
+And this can get quite complicated with lots of objects. And what about moving objects? If some enemy is circling around you, how can you find out who must have higher z-order?
+
+### Sorting layers (dynamic)
 
 This is the most common system used, but it could be used with different approaches.
 
@@ -75,6 +109,20 @@ Although that, since we may have sprites with different sizes (widths and height
 
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_1.png?raw=true">
 <img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/pocket_city_4.png?raw=true">
+
+This is where it gets smarter. First, let’s look at collision bounding boxes:
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_4.png?raw=true">
+
+Look at the Link’s bounding box. Its lowest Y coordinate is higher than tree’s and that’s why Link is drawn after the tree. And look at another situation. Now lowest Y coordinate of tree is higher, so you draw it after Link.
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_5.png?raw=true">
+
+So, that’s what you do:
+
+**Sort all objects(or sprites) visible on the screen and sort this list by (boundingBox.top + boundingBox.height) value from lowest to highest and then draw objects in this order.**
+
+If some object doesn’t have boundingBox, you can think like its **boundingBox.top + boundingBox.width equals 0**. 
 
 That could consume more resources than we expected, because we must sort a lot of objects. Remember that we are doing it each and every frame with all the objects and entities we have, including static and dynamic entities. Although that, if this approach is selected there is no other way to do it, because remember that not only the player can change its position, but also the enemies, NPCs or any other element we have around the map; and this has to be taken into account and sorted every frame. In order to optimize, we have implemented a camera culling, in order to sort and render only the entities on camera (on screen). Also, it depends on the entity types and how are saved. The sorting method also influences.
 
@@ -96,6 +144,33 @@ To do that, Guinxu solved the problem putting up two types of colliders. One typ
 #### By Vector 3D
 
 This approach is common in isometric maps because it looks like a 3D environment. Although that, it's the most difficult way to implement. We must use 3 dimensions in order to get well the sorting of sprites. To render objects, we will have to project the vector3 to 2D. It is the most tricky and complex way to have sprite sorting. It is also the best way to sort sprites in isometric maps.
+
+#### Complex objects
+
+Drawing something like arcs is trickier. It requires you to use two bounding boxes for each column. And how do you deal with the part which is above player?
+You need to use z axis for this. “Z” has nothing to do with z-order in the context. It tells you how far from the ground is **boundingBox** of an object (**z = 0** is ground level). Here’s how the arc can be separated:
+
+<img src="https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/images/zelda_a_link_to_the_past_6.png?raw=true">
+
+The algorithm is the same, but now you can sort by lowest Y coordinate for each Z and then combine them in one list sorted by Z. You’ll get something like this:
+
+```cpp
+objects = {
+
+link, (z = 0, lowY = 64)
+
+column_a, (z = 0, lowY = 100)
+
+column_b, (z = 0, lowY = 100)
+
+topPart (z = 1, lowY = 80)
+
+}
+```
+
+So arc will consist from three parts and each will be drawn in needed order.
+
+Separating by z axis is actually very useful, because, for example, objects with higher z value don’t have to be checked when you check collision with objects but that’s another thing to talk about. ;)
 
 # Camera Culling
 
