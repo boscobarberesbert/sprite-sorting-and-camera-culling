@@ -42,7 +42,7 @@ Now that you know that these topics are actually very important for a game to be
 
 ### Author
 
-- [**Bosco Barber Esbert**](https://es.linkedin.com/in/bosco-barber-esbert-b13876201) ([boscobarberesbert](https://github.com/boscobarberesbert)) - Programmer
+- [**Bosco Barber Esbert**](https://es.linkedin.com/in/bosco-barber-esbert-b13876201) - Programmer
 - GitHub account: [boscobarberesbert](https://github.com/boscobarberesbert)
 - Contact: boscobarberesbert@gmail.com
 
