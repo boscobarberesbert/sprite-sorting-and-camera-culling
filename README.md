@@ -8,7 +8,7 @@ I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876
 
 This project contains a research about the optimization of a game to only blit tiles and sprites that are on the camera viewport. Also, it is about sorting entities to make a feeling of depth in top-down and isometric games. Contains an integration of Tiled into SDL.
 
-In my [website](https://www.boscodev.com/sprite-sorting-and-camera-culling/) you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [main GitHub repository page](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
+In my [website](https://www.boscodev.com/sprite-sorting-and-camera-culling/) you will find information about Sprite Sorting and Camera Culling and how to implement them in your project. You can also visit the [repository](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling) where you will be able to find two Visual Studio projects, one with the Sprite Sorting and Camera Culling systems fully implemented and another one with some parts missing to help you practice.
 
 This research will solve the following questions and provide help to implement them in your code:
 * Do you want to change manually all your code every time you want to print something in a different order or you prefer an automatic method?
