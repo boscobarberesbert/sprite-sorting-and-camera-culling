@@ -1,9 +1,5 @@
 # Sprite Sorting and Camera Culling
 
-## About me
-
-I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is generated for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
-
 ## About the project
 
 This project contains a research about the optimization of a game to only blit tiles and sprites that are on the camera viewport. Also, it is about sorting entities to make a feeling of depth in top-down and isometric games. Contains an integration of Tiled into SDL.
@@ -38,9 +34,11 @@ Now that you know that these topics are actually very important for a game to be
 - F3 to set map 1.
 - F4 to set map 2.
 
-## Developer
+## Developer (Author)
 
-### Author
+### About me
+
+I am [Bosco Barber Esbert](https://es.linkedin.com/in/bosco-barber-esbert-b13876201), student of the [Bachelor's degree in Video Game Design and Development](https://www.citm.upc.edu/ing/estudis/grau-videojocs-bcn/) by [UPC](https://www.upc.edu/en) at [CITM](https://www.citm.upc.edu/). This content is generated for the second year’s subject Project II, under supervision of the lecturer [Ramón Santamaría](https://es.linkedin.com/in/raysan).
 
 - [**Bosco Barber Esbert**](https://es.linkedin.com/in/bosco-barber-esbert-b13876201) - Programmer
 - GitHub account: [boscobarberesbert](https://github.com/boscobarberesbert)
