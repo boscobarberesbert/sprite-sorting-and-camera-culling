@@ -54,7 +54,6 @@ bool EntityManager::UpdateAll(float dt)
 	bool ret = true;
 
 	std::vector<Entity*> drawEntities;
-	SDL_Rect r = { 0,0,0,0 };
 	uint entitiesDrawn = 0;
 
 	for (std::vector<Entity*>::iterator item = entities.begin();item != entities.end(); ++item) {
@@ -185,7 +184,7 @@ void EntityManager::DrawDebugQuad(Entity *entity)
 	app->render->DrawCircle(section.x + entity->pivot.x, section.y + entity->pivot.y, 3, 0, 255, 0);
 }
 
-static bool SortByYPos(const Entity* ent1, const Entity* ent2)
+bool EntityManager::SortByYPos(const Entity* ent1, const Entity* ent2)
 {
 	return ent1->pivot.y + ent1->position.y < ent2->position.y + ent2->pivot.y;
 }
