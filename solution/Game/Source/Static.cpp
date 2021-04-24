@@ -7,7 +7,7 @@
 
 Static::Static(int x, int y, std::string name) :Entity(Types::STATIC, x, y, name)
 {
-	//assign type of static entity, texture rect and pivot
+	//Assign type of static entity, texture rect and pivot
 	//Orthogonal map ------------------------
 	if (name == "building_0") {
 		type = Static::Type::BUILDING;
