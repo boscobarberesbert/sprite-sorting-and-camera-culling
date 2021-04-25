@@ -243,7 +243,7 @@ bool Map::Load(const char* fileName)
 	
 	for (objectGroup = mapFile.child("map").child("objectgroup"); objectGroup && ret; objectGroup = objectGroup.next_sibling("objectgroup"))
 	{
-		for (object = objectGroup.child("object"); object;object = object.next_sibling("object")) {
+		for (object = objectGroup.child("object"); object; object = object.next_sibling("object")) {
 
 			ColliderObject* obj = new ColliderObject();
 		
