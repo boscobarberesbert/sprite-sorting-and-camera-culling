@@ -3919,9 +3919,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="149"/>
-   <tile gid="150"/>
-   <tile gid="151"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
    <tile/>
    <tile/>
    <tile/>
@@ -3964,9 +3964,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="163"/>
-   <tile gid="164"/>
-   <tile gid="165"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
    <tile/>
    <tile/>
    <tile/>
@@ -4009,9 +4009,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="177"/>
-   <tile gid="178"/>
-   <tile gid="179"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
    <tile/>
    <tile/>
    <tile/>
@@ -4054,9 +4054,9 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="191"/>
-   <tile gid="192"/>
-   <tile gid="193"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
+   <tile gid="16"/>
    <tile/>
    <tile/>
    <tile/>
@@ -4101,7 +4101,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="16"/>
    <tile/>
    <tile gid="49"/>
    <tile/>
@@ -4753,7 +4753,6 @@
   <object id="21" name="building_2" type="static" x="208" y="192" width="32" height="32"/>
   <object id="22" name="building_1" type="static" x="240" y="272" width="32" height="32"/>
   <object id="23" name="building_0" type="static" x="320" y="240" width="64" height="80"/>
-  <object id="24" name="building_3" type="static" x="432" y="264" width="48" height="40"/>
   <object id="25" name="building_1" type="static" x="480" y="176" width="32" height="32"/>
   <object id="26" name="rock_0" type="static" x="231" y="355" width="35" height="29"/>
   <object id="27" name="rock_1" type="static" x="209" y="308" width="14" height="12"/>
