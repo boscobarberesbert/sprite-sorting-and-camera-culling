@@ -14,7 +14,7 @@ Now that you know that these topics are actually very important for a game to be
 
 ## Resources
 
-* [Presentation](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/Research%20presentation.pdf)
+* [Presentation](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/research_presentation.pdf)
 * [Release](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/releases/tag/v1.0)
 * [Code (Handout and Solution)](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling)
 
