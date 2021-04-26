@@ -12,6 +12,12 @@ This research will solve the following questions and provide help to implement t
 
 Now that you know that these topics are actually very important for a game to be optimized, let me explain them more in depth and give you a focused guide on how to implement these techniques in your code.
 
+## Resources
+
+* [Presentation](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/blob/master/docs/Research%20presentation.pdf)
+* [Release](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling/releases/tag/v1.0)
+* [Code (Handout and Solution)](https://github.com/boscobarberesbert/sprite-sorting-and-camera-culling)
+
 # Sprite Sorting
 
 ## What is sprite sorting?
