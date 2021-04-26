@@ -53,8 +53,7 @@ bool Scene::Start()
 
 void Scene::CreateEntities()
 {
-	// Iterate all objects of the map made with Tiled to find entities
-
+	//Iterate all objects of the map made with Tiled to find entities
 	for (std::list<ColliderObject*>::iterator position = app->map->data.colliders.begin(); position != app->map->data.colliders.end(); position++) {
 		if ((*position)->name == "player") {
 			app->entities->CreateEntity(Entity::Types::PLAYER, (*position)->collX, (*position)->collY, (*position)->name);
