@@ -59,6 +59,8 @@ bool EntityManager::UpdateAll(float dt)
 	std::vector<Entity*> drawEntities;
 	uint entitiesDrawn = 0;
 
+	// TODO 5: Use std::sort(Iterator first, Iterator last, Compare comp) before iterate drawEntities. Sort only entities in drawEntities vector. For function to compare you can use EntityManager::SortByYPos
+
 	for (std::vector<Entity*>::iterator item = drawEntities.begin(); item != drawEntities.end(); ++item) {
 		if (*item != nullptr) {
 			ret = (*item)->Update(dt);
@@ -71,9 +73,6 @@ bool EntityManager::UpdateAll(float dt)
 			}
 		}
 	}
-
-	// TODO 5: Use std::sort(Iterator first, Iterator last, Compare comp) before iterate drawEntities. Sort only entities in drawEntities vector. For function to compare you can use EntityManager::SortByYPos
-
 
 	drawEntities.clear();
 	
